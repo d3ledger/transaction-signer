@@ -7,7 +7,7 @@ export const lazyComponent = (name) => () => import(`@/components/${name}.vue`)
 export const lazyView = (name) => () => import(`@/views/${name}.vue`)
 
 const defaultRouter = new Router({
-  mode: 'history',
+  mode: 'hash',
   base: process.env.BASE_URL,
   routes: [
     {

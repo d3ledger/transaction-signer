@@ -10,6 +10,18 @@ module.exports = {
           return args
         })
         return config
+      },
+      builderOptions: {
+        productName: 'D3 OTS',
+        mac: {
+          icon: 'build/logo'
+        },
+        win: {
+          icon: 'build/logo'
+        },
+        linux: {
+          icon: 'build/logo'
+        }
       }
     }
   }
