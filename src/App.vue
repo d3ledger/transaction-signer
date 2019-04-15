@@ -16,8 +16,7 @@ export default {
     window.addEventListener('online', this.onHandleOnlineStatus)
     window.addEventListener('offline', this.onHandleOnlineStatus)
 
-    // this.handleOnlineStatus(navigator.onLine)
-    this.handleOnlineStatus(false)
+    this.handleOnlineStatus(navigator.onLine)
   },
   methods: {
     ...mapActions([

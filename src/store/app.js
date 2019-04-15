@@ -139,7 +139,6 @@ const actions = {
   signTransaction ({ commit }, info) {
     commit(types.SIGN_TRANSACTION)
     const signed = txHelper.sign(info.transaction, info.privateKey)
-    console.log(signed)
     return Promise.resolve(signed)
   }
 }

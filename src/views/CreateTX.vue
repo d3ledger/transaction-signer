@@ -101,7 +101,6 @@ export default {
       this.info.params = {}
     },
     onSaveTransaction () {
-      console.log(isEmpty(this.info.params))
       if (isEmpty(this.info.params) || !this.info.commandType) {
         this.$message.error('Transaction has empty parameters!')
         return
