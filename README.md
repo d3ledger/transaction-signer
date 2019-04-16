@@ -1,39 +1,31 @@
-# electron
+[![npm version](https://img.shields.io/npm/v/iroha-helpers.svg)](https://www.npmjs.com/package/iroha-helpers) [![Iroha 1.0.0-rc5](https://img.shields.io/badge/Iroha-1.0.0--rc5-red.svg)](https://github.com/hyperledger/iroha/releases/tag/1.0.0_rc5)
+
+# D3 Offline transaction signer
+
+This is application based on Electron.js for generating key pairs and transactions offline. Application requires user to be offline, if user have connected to the Internet, he will receive a notification about it.
+
+### Features
+1. Creating key-pairs
+2. Creating transactions
+3. Signing transactions
 
 ## Project setup
+This command will install all required dependencies for application
 ```
 yarn install
 ```
 
 ### Compiles and hot-reloads for development
 ```
-yarn run serve
+yarn electron:serve
 ```
 
-### Compiles and minifies for production
+### Compiles and build for current OS
 ```
-yarn run build
-```
-
-### Run your tests
-```
-yarn run test
+yarn run electron:build
 ```
 
-### Lints and fixes files
+### Compiles and build for different OS
 ```
-yarn run lint
+yarn run electron:build-all
 ```
-
-### Run your end-to-end tests
-```
-yarn run test:e2e
-```
-
-### Run your unit tests
-```
-yarn run test:unit
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
