@@ -1,3 +1,7 @@
+<!--
+  Copyright Soramitsu Co., Ltd. All Rights Reserved.
+  SPDX-License-Identifier: Apache-2.0
+-->
 <template>
   <el-form label-position="top" label-width="100px" :model="params">
     <el-form-item label="Source account ID">

@@ -1,3 +1,7 @@
+/*
+ * Copyright Soramitsu Co., Ltd. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 /**
  * The file enables `@/store/index.js` to import all vuex modules
  * in a one-shot manner. There should not be any reason to edit this file.
