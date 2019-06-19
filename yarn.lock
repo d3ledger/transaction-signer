@@ -575,6 +575,14 @@
     "@babel/helper-regex" "^7.4.3"
     regexpu-core "^4.5.4"
 
+"@babel/polyfill@^7.4.4":
+  version "7.4.4"
+  resolved "https://registry.yarnpkg.com/@babel/polyfill/-/polyfill-7.4.4.tgz#78801cf3dbe657844eeabf31c1cae3828051e893"
+  integrity sha512-WlthFLfhQQhh+A2Gn5NSFl0Huxz36x86Jn+E9OW7ibK8edKPq+KLy4apM1yDpQ8kJOVi1OVjpP4vSDLdrI04dg==
+  dependencies:
+    core-js "^2.6.5"
+    regenerator-runtime "^0.13.2"
+
 "@babel/preset-env@^7.0.0 < 7.4.0":
   version "7.3.4"
   resolved "https://registry.yarnpkg.com/@babel/preset-env/-/preset-env-7.3.4.tgz#887cf38b6d23c82f19b5135298bdb160062e33e1"
@@ -4482,10 +4490,10 @@ electron-to-chromium@^1.3.122:
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.124.tgz#861fc0148748a11b3e5ccebdf8b795ff513fa11f"
   integrity sha512-glecGr/kFdfeXUHOHAWvGcXrxNU+1wSO/t5B23tT1dtlvYB26GY8aHzZSWD7HqhqC800Lr+w/hQul6C5AF542w==
 
-electron@^5.0.2:
-  version "5.0.2"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-5.0.2.tgz#0f6b38ae7e344b94f433d9171e50568f56962fc7"
-  integrity sha512-bUHKQhyuOen/q8iHTkrnzqB9CAwBDI+vHbeu21kpq2bqAD+t25yfrmUEcYHaPL4fZOAhk6nnRqskF6/Xd+aZxg==
+electron@^5.0.4:
+  version "5.0.4"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-5.0.4.tgz#2e0d09055363e983f4a73317cde4821c39617b02"
+  integrity sha512-7QaKorvANvP+azMT7wElx33oLlqw8QxmLs7/outfH7LC5amErk4EUtWDesQ6Zgr+s5pYFbykl8ZtJ4ZGXER05g==
   dependencies:
     "@types/node" "^10.12.18"
     electron-download "^4.1.0"
@@ -4496,10 +4504,10 @@ elegant-spinner@^1.0.1:
   resolved "https://registry.yarnpkg.com/elegant-spinner/-/elegant-spinner-1.0.1.tgz#db043521c95d7e303fd8f345bedc3349cfb0729e"
   integrity sha1-2wQ1IcldfjA/2PNFvtwzSc+wcp4=
 
-element-ui@^2.8.2:
-  version "2.8.2"
-  resolved "https://registry.yarnpkg.com/element-ui/-/element-ui-2.8.2.tgz#21a7a4cb92616b0f8b75d4d4e637d3a1cd8c09de"
-  integrity sha512-LABKHKGUyewFNvpf9BQLecB659Wq0XYvyP1tBveZ4RWpdlPSylDfGW/RLvDYU7zuCBoRasdZAz7ryjOwq1lLNg==
+element-ui@^2.9.1:
+  version "2.9.1"
+  resolved "https://registry.yarnpkg.com/element-ui/-/element-ui-2.9.1.tgz#a05f2e76023d529ba0dfa2d03ae16e5134b20c4e"
+  integrity sha512-w8vrCW5Q+2gfDzs19MUrFdnCy5IjF98rs7DBsKnJQKFfZJZiZ2O+YAsSp/EuPrCm3P/2o/N3MtvZ34VANel13g==
   dependencies:
     async-validator "~1.8.1"
     babel-helper-vue-jsx-merge-props "^2.0.0"
@@ -5792,13 +5800,6 @@ growly@^1.3.0:
   resolved "https://registry.yarnpkg.com/growly/-/growly-1.3.0.tgz#f10748cbe76af964b7c96c93c6bcc28af120c081"
   integrity sha1-8QdIy+dq+WS3yWyTxrzCivEgwIE=
 
-grpc-web-client@^0.7.0:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/grpc-web-client/-/grpc-web-client-0.7.0.tgz#db19d331ad1fec49ed56744031340ee6af8529b9"
-  integrity sha512-tydslNg6pPHi61aMs0HoaETTtyDR5TQyDZ0AQhbbURpOK2NW8IMrUGs/i1UMkS0H64Vj7PuggSAhDohP41yubQ==
-  dependencies:
-    browser-headers "^0.4.0"
-
 gzip-size@^5.0.0:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/gzip-size/-/gzip-size-5.1.1.tgz#cb9bee692f87c0612b232840a873904e4c135274"
@@ -6349,23 +6350,22 @@ ipaddr.js@1.9.0, ipaddr.js@^1.9.0:
   resolved "https://registry.yarnpkg.com/ipaddr.js/-/ipaddr.js-1.9.0.tgz#37df74e430a0e47550fe54a2defe30d8acd95f65"
   integrity sha512-M4Sjn6N/+O6/IXSJseKqHoFc+5FdGJ22sXqnjTpdZweHK64MzEPAyQZyEU3R/KRv2GLoa7nNtg/C2Ev6m7z+eA==
 
-iroha-helpers@^0.6.14:
-  version "0.6.14"
-  resolved "https://registry.yarnpkg.com/iroha-helpers/-/iroha-helpers-0.6.14.tgz#d20e33b1e495f12f28ce5811718609d82d86d601"
-  integrity sha512-xqgvJLwZn5Otznny96AwyntYDHoEJsWAG8Mh63BAsJvdPwFDsxEE2WkzMZ6m+5aqfOlA+QqxsTrfew4QosSJOg==
+iroha-helpers@^0.6.20:
+  version "0.6.20"
+  resolved "https://registry.yarnpkg.com/iroha-helpers/-/iroha-helpers-0.6.20.tgz#45c52a5878973256e7aa1c57542db5fa45f35597"
+  integrity sha512-4s0Pgvha6KyxTX5P2fVDOC4ZlxIhccQfftUaUclt+mfKA9yp5NHVRwHt5R2LyvrLrK0PmdFl6vwQ9Ozjb488zA==
   dependencies:
+    "@babel/polyfill" "^7.4.4"
     "@improbable-eng/grpc-web" "^0.9.1"
     babel-preset-minify "^0.5.0"
     buffer "^5.2.1"
     ed25519.js "^1.3.0"
     google-protobuf "^3.7.1"
-    grpc-web-client "^0.7.0"
     js-sha3 "^0.8.0"
     lodash.clonedeep "^4.5.0"
     lodash.flow "^3.5.0"
     lodash.isequal "^4.5.0"
     lodash.isplainobject "^4.0.6"
-    rxjs "^6.5.2"
 
 is-absolute-url@^2.0.0:
   version "2.1.0"
@@ -10258,13 +10258,6 @@ rxjs@^6.4.0:
   version "6.4.0"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.4.0.tgz#f3bb0fe7bda7fb69deac0c16f17b50b0b8790504"
   integrity sha512-Z9Yfa11F6B9Sg/BK9MnqnQ+aQYicPLtilXBp2yUtDt2JRCE0h26d33EnfO3ZxoNxG0T92OUucP3Ct7cpfkdFfw==
-  dependencies:
-    tslib "^1.9.0"
-
-rxjs@^6.5.2:
-  version "6.5.2"
-  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.5.2.tgz#2e35ce815cd46d84d02a209fb4e5921e051dbec7"
-  integrity sha512-HUb7j3kvb7p7eCUHE3FqjoDsC1xfZQ4AHFWfTKSpZ+sAhhz5X1WX0ZuUqWbzB2QhSLp3DoLUG+hMdEDKqWo2Zg==
   dependencies:
     tslib "^1.9.0"
 

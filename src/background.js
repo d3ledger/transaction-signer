@@ -18,14 +18,25 @@ const isDevelopment = process.env.NODE_ENV !== 'production'
 let win
 
 // Standard scheme must be registered before the app is ready
-protocol.registerStandardSchemes(['app'], { secure: true })
+protocol.registerSchemesAsPrivileged([{
+  scheme: 'app',
+  privileges: {
+    standart: true,
+    secure: true,
+    supportFetchAPI: true
+  }
+}])
+
 function createWindow () {
   // Create the browser window.
   win = new BrowserWindow({
     width: 800,
     height: 600,
     resizable: false,
-    title: 'D3 OTS'
+    title: 'D3 OTS',
+    webPreferences: {
+      nodeIntegration: true
+    }
   })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {

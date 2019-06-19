@@ -85,7 +85,7 @@ export default {
   },
   computed: {
     isParamsEmpty () {
-      return Object.keys(this.info.params).length ? false : true
+      return !Object.keys(this.info.params).length
     }
   },
   methods: {
