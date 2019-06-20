@@ -28,6 +28,20 @@
         </el-upload>
       </el-row>
     </el-form-item>
+    <el-form-item label="Quorum">
+      <el-input
+        name="quorum"
+        v-model="sign.quorum"
+        placeholder="Set your account quorum"
+      />
+    </el-form-item>
+    <el-form-item label="Account ID">
+      <el-input
+        name="accountId"
+        v-model="sign.creatorAccountId"
+        placeholder="Set your account id"
+      />
+    </el-form-item>
   </el-form>
 </template>
 

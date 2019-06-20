@@ -8,7 +8,11 @@ import concat from 'lodash/fp/concat'
 import fromPairs from 'lodash/fp/fromPairs'
 import flow from 'lodash/fp/flow'
 
-import { cryptoHelper, txHelper } from 'iroha-helpers'
+import {
+  cryptoHelper,
+  txHelper,
+  signWithArrayOfKeys
+} from 'iroha-helpers'
 import {
   createCommand,
   transactionToBinary,
@@ -142,7 +146,12 @@ const actions = {
   },
   signTransaction ({ commit }, info) {
     commit(types.SIGN_TRANSACTION)
-    const signed = txHelper.sign(info.transaction, info.privateKey)
+    const { transaction, privateKey, creatorAccountId, quorum } = info
+    const tx = txHelper.addMeta(transaction, {
+      quorum,
+      creatorAccountId
+    })
+    const signed = signWithArrayOfKeys(tx, [privateKey])
     return Promise.resolve(signed)
   }
 }

@@ -63,7 +63,9 @@ export default {
       stage: 1,
 
       signForm: {
-        privateKey: ''
+        privateKey: '',
+        quorum: 0,
+        creatorAccountId: ''
       }
     }
   },
@@ -111,7 +113,9 @@ export default {
       this.rawTx = undefined
       this.stage = 1
       this.signForm = {
-        privateKey: ''
+        privateKey: '',
+        quorum: 0,
+        creatorAccountId: ''
       }
     },
     nextStage () {
@@ -132,7 +136,7 @@ export default {
     onSign () {
       return this.signTransaction({
         transaction: this.rawTx,
-        privateKey: this.signForm.privateKey
+        ...this.signForm
       })
     },
     onSaveTransaction (tx) {
@@ -157,9 +161,6 @@ export default {
 .key_label {
   font-size: 0.8rem;
   padding: 0.3rem 0.5rem;
-}
-.content-body {
-  height: 12rem;
 }
 
 .transaction {
