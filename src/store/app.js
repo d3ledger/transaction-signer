@@ -148,7 +148,7 @@ const actions = {
     commit(types.SIGN_TRANSACTION)
     const { transaction, privateKey, creatorAccountId, quorum } = info
     const tx = txHelper.addMeta(transaction, {
-      quorum,
+      quorum: quorum * 2,
       creatorAccountId
     })
     const signed = signWithArrayOfKeys(tx, [privateKey])
