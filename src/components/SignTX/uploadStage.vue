@@ -14,20 +14,25 @@
     :on-change="(f, l) => uploadFunc(f, l)"
     list-type="text"
   >
-    <i class="el-icon-upload"></i>
-    <div class="el-upload__text fullwidth">Drop file here or <em>click to upload</em></div>
+    <i class="el-icon-upload" />
+    <div class="el-upload__text fullwidth">
+      Drop file here or <em>click to upload</em>
+    </div>
   </el-upload>
   <div
     v-else
     class="transaction"
-  >{{ parsedTx }}</div>
+  >
+    {{ parsedTx }}
+  </div>
 </template>
 
 <script>
 export default {
   props: {
     rawTx: {
-      type: Object
+      type: Object,
+      default: () => {}
     },
     uploadFunc: {
       type: Function,

@@ -5,26 +5,43 @@
 <template>
   <div class="wrapper">
     <el-card>
-      <div slot="header" class="clearfix">
+      <div
+        slot="header"
+        class="clearfix"
+      >
         <span>Generate transaction</span>
-        <el-button style="float: right; padding: 3px 0" type="text" @click="goBack">
+        <el-button
+          style="float: right; padding: 3px 0"
+          type="text"
+          @click="goBack"
+        >
           Back
         </el-button>
       </div>
       <div class="content">
-        <el-form label-position="top" :model="info">
+        <el-form
+          label-position="top"
+          :model="info"
+        >
           <el-form-item label="Private key">
-            <el-select @change="onChangeCommandType" v-model="info.commandType" placeholder="Select command">
+            <el-select
+              v-model="info.commandType"
+              placeholder="Select command"
+              @change="onChangeCommandType"
+            >
               <el-option
                 v-for="command in commands"
                 :key="command.value"
                 :label="command.label"
-                :value="command.value">
-              </el-option>
+                :value="command.value"
+              />
             </el-select>
           </el-form-item>
         </el-form>
-        <transition name="slide-fade" mode="out-in">
+        <transition
+          name="slide-fade"
+          mode="out-in"
+        >
           <transferAsset
             v-if="info.commandType === 'transferAsset'"
             :params.sync="info.params"
@@ -58,7 +75,7 @@ import { lazyComponent } from '@/router'
 import isEmpty from 'lodash/isEmpty'
 
 export default {
-  name: 'create-tx',
+  name: 'CreateTx',
   components: {
     transferAsset: lazyComponent('CreateTX/transferAsset'),
     addSignatory: lazyComponent('CreateTX/addSignatory'),

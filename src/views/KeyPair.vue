@@ -5,24 +5,50 @@
 <template>
   <div class="wrapper">
     <el-card>
-      <div slot="header" class="clearfix">
+      <div
+        slot="header"
+        class="clearfix"
+      >
         <span>Generate key pair</span>
-        <el-button style="float: right; padding: 3px 0" type="text" @click="goBack">
+        <el-button
+          style="float: right; padding: 3px 0"
+          type="text"
+          @click="goBack"
+        >
           Back
         </el-button>
       </div>
       <div class="content">
-        <el-form label-position="top" :model="info">
+        <el-form
+          label-position="top"
+          :model="info"
+        >
           <el-form-item label="Private key">
-            <el-input v-model="info.privateKey" disabled></el-input>
+            <el-input
+              v-model="info.privateKey"
+              disabled
+            />
           </el-form-item>
           <el-form-item label="Public key">
-            <el-input v-model="info.publicKey" disabled></el-input>
+            <el-input
+              v-model="info.publicKey"
+              disabled
+            />
           </el-form-item>
         </el-form>
         <div class="actions">
-          <el-button class="sora-button red" @click="onGenerateKeyPair">Generate new</el-button>
-          <el-button class="sora-button black" @click="onSaveKeys">Save</el-button>
+          <el-button
+            class="sora-button red"
+            @click="onGenerateKeyPair"
+          >
+            Generate new
+          </el-button>
+          <el-button
+            class="sora-button black"
+            @click="onSaveKeys"
+          >
+            Save
+          </el-button>
         </div>
       </div>
     </el-card>
@@ -32,7 +58,7 @@
 <script>
 import { mapActions } from 'vuex'
 export default {
-  name: 'keypair',
+  name: 'Keypair',
   data () {
     return {
       info: {

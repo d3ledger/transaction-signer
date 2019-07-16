@@ -5,21 +5,45 @@
 <template>
   <div class="wrapper">
     <el-card>
-      <div slot="header" class="clearfix">
+      <div
+        slot="header"
+        class="clearfix"
+      >
         <span>Sign transaction</span>
-        <el-button style="float: right; padding: 3px 0" type="text" @click="goBack">
+        <el-button
+          style="float: right; padding: 3px 0"
+          type="text"
+          @click="goBack"
+        >
           Back
         </el-button>
       </div>
       <div class="content">
         <div class="content-body">
-          <transition name="slide-fade" mode="out-in">
-            <uploadStage v-if="stage === 1" :rawTx="rawTx" :uploadFunc="onTxUploaded" :parsedTx="transactionToShow" />
-            <signStage v-if="stage === 2" :sign.sync="signForm"/>
+          <transition
+            name="slide-fade"
+            mode="out-in"
+          >
+            <uploadStage
+              v-if="stage === 1"
+              :raw-tx="rawTx"
+              :upload-func="onTxUploaded"
+              :parsed-tx="transactionToShow"
+            />
+            <signStage
+              v-if="stage === 2"
+              :sign.sync="signForm"
+            />
           </transition>
         </div>
-        <transition name="slide-fade" mode="out-in">
-          <div v-if="rawTx" class="actions">
+        <transition
+          name="slide-fade"
+          mode="out-in"
+        >
+          <div
+            v-if="rawTx"
+            class="actions"
+          >
             <el-button
               class="sora-button red"
               @click="onReset"
@@ -52,7 +76,7 @@ import { mapActions } from 'vuex'
 import { lazyComponent } from '@/router'
 
 export default {
-  name: 'sign-tx',
+  name: 'SignTx',
   components: {
     uploadStage: lazyComponent('SignTX/uploadStage'),
     signStage: lazyComponent('SignTX/signStage')
