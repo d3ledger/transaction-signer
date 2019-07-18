@@ -70,8 +70,7 @@ const mutations = {
   },
 
   [types.ONLINE_STATUS_UPDATED] (state, status) {
-    // state.isApplicationOnline = status
-    state.isApplicationOnline = false
+    state.isApplicationOnline = status
   },
   [types.GENERATE_KEYPAIR] (state) {},
   [types.SAVE_KEYS_FILE] (state) {},
