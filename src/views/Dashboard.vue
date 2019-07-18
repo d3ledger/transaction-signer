@@ -5,28 +5,52 @@
 <template>
   <div class="menu">
     <div class="logo">
-      <img src="@/assets/icons/logo.svg"/>
+      <img src="@/assets/icons/logo.svg">
     </div>
     <div>
       <el-row class="menu-list">
-        <el-col :span="8" class="menu-list_col">
-          <div class="grid-content white" @click="goTo('/keypair')">
+        <el-col
+          :span="8"
+          class="menu-list_col"
+        >
+          <div
+            class="grid-content white"
+            @click="goTo('/keypair')"
+          >
             <div class="action-tab">
-              <p class="action-tab_title">Create key-pair</p>
+              <p class="action-tab_title">
+                Create key-pair
+              </p>
             </div>
           </div>
         </el-col>
-        <el-col :span="8" class="menu-list_col">
-          <div class="grid-content white" @click="goTo('/create-tx')">
+        <el-col
+          :span="8"
+          class="menu-list_col"
+        >
+          <div
+            class="grid-content white"
+            @click="goTo('/create-tx')"
+          >
             <div class="action-tab">
-              <p class="action-tab_title">Create transaction</p>
+              <p class="action-tab_title">
+                Create transaction
+              </p>
             </div>
           </div>
         </el-col>
-        <el-col :span="8" class="menu-list_col">
-          <div class="grid-content white" @click="goTo('/sign-tx')">
+        <el-col
+          :span="8"
+          class="menu-list_col"
+        >
+          <div
+            class="grid-content white"
+            @click="goTo('/sign-tx')"
+          >
             <div class="action-tab">
-              <p class="action-tab_title">Sign transaction</p>
+              <p class="action-tab_title">
+                Sign transaction
+              </p>
             </div>
           </div>
         </el-col>
@@ -37,7 +61,7 @@
 
 <script>
 export default {
-  name: 'dashboard',
+  name: 'Dashboard',
   methods: {
     goTo (to) {
       this.$router.push(to)

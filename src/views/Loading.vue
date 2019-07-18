@@ -5,19 +5,42 @@
 <template>
   <div class="loading_wrapper">
     <div class="logo">
-      <img src="@/assets/icons/logo.svg"/>
+      <img src="@/assets/icons/logo.svg">
     </div>
     <div class="loader">
-      <div class="loader_text">{{ loadingText }}</div>
+      <div class="loader_title">
+        <span class="loader_icon">{{ loadingText.icon }}</span>
+        <div class="loader_text">
+          {{ loadingText.text }}
+        </div>
+        <div
+          v-if="loadingText.description"
+          class="loader_desc"
+        >
+          {{ loadingText.description }}
+        </div>
+      </div>
       <el-progress
-        :text-inside="true"
-        :stroke-width="20"
+        class="loader_percent"
+        :stroke-width="10"
         :percentage="currentPercent"
-        color="rgba(255, 255, 255, 0.7)"
+        color="rgba(216, 216, 216, 1)"
         :show-text="false"
-      ></el-progress>
-      <div class="loader_error" v-if="currentPercent >= 100 && isApplicationOnlineTemp">
-        <el-button class="sora-button red" @click="checkConnection">Try again!</el-button>
+      />
+      <div
+        v-if="currentPercent >= 100 && isApplicationOnlineTemp"
+        class="loader_error"
+      >
+        <el-button
+          class="black-button"
+          @click="checkConnection"
+        >
+          <img
+            src="@/assets/icons/reload.svg"
+            class="black-button_icon"
+          >
+          Try again
+        </el-button>
       </div>
     </div>
   </div>
@@ -26,7 +49,7 @@
 <script>
 import { mapGetters } from 'vuex'
 export default {
-  name: 'loading',
+  name: 'Loading',
   data () {
     return {
       currentPercent: 0,
@@ -35,29 +58,41 @@ export default {
       isApplicationOnlineTemp: true
     }
   },
-  created () {
-    this.checkConnection()
-  },
   computed: {
     ...mapGetters([
       'isApplicationOnline'
     ]),
     loadingText () {
-      const words = [
-        'Loading... ⌛',
-        'Checking...  ♾️',
-        'Preparing... 🔨',
-        'Ready! ❤️',
-        'Connection discovered! 🤭',
-        'Thinking... 🤔'
+      const title = [
+        {
+          text: 'Loading...',
+          icon: '⏳'
+        }, {
+          text: 'Checking...',
+          icon: '🔍'
+        }, {
+          text: 'Preparing...',
+          icon: '🛠️'
+        }, {
+          text: 'Ready',
+          icon: '🚀'
+        }, {
+          text: 'Please turn off internet connection',
+          icon: '📡',
+          description: 'You are now online. To ensure the safety of your pricate keys, please turn off Wi-Fi or LAN connection.'
+        }
       ]
-      if (this.currentPercent <= 50) return words[0]
-      if (this.currentPercent <= 75) return words[1]
-      if (this.currentPercent < 100) return words[2]
-      if (this.currentPercent === 100 && !this.isApplicationOnlineTemp) return words[3]
-      if (this.currentPercent === 100 && this.isApplicationOnlineTemp) return words[4]
-      return words[5]
+
+      if (this.currentPercent <= 50) return title[0]
+      if (this.currentPercent <= 75) return title[1]
+      if (this.currentPercent < 100) return title[2]
+      if (this.currentPercent === 100 && !this.isApplicationOnlineTemp) return title[3]
+      if (this.currentPercent === 100 && this.isApplicationOnlineTemp) return title[4]
+      return title[4]
     }
+  },
+  created () {
+    this.checkConnection()
   },
   methods: {
     checkConnection () {
@@ -70,25 +105,17 @@ export default {
           clearInterval(this.loadingInterval)
 
           if (this.isApplicationOnline) {
-            this.$message({
-              type: 'error',
-              dangerouslyUseHTMLString: true,
-              message: `
-                You connected to the Internet.</br>
-                Please check that your connection is off and try again!
-              `
-            })
             return
           }
 
           if (!this.isApplicationOnline) {
-            this.$router.push('/dashboard')
+            this.$router.push('/information')
           }
 
           return
         }
         this.currentPercent += 10
-      }, 1 * 500)
+      }, 1 * 250)
     }
   }
 }
@@ -101,24 +128,40 @@ export default {
   padding: 2rem;
 }
 .loader {
-  margin-top: 10%
+  margin-top: 5%;
+}
+.loader_title {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+.loader_icon {
+  text-align: center;
+  font-size: 1.2rem;
 }
 .loader_text {
   text-align: center;
   padding: 1rem;
   color: white;
-  text-transform: uppercase;
+  font-size: 1.2rem;
+}
+.loader_desc {
+  font-family: 'IBM Plex Sans Regular';
+  text-align: center;
+  color: white;
+  font-size: 1rem;
+  padding: 0 25% 1rem;
+}
+.loader_percent {
+  width: 40%;
+  margin: 0 auto;
 }
 .loader_error {
   display: flex;
   justify-content: center;
-  margin-top: 5rem;
+  margin-top: 1.5rem;
 }
 .loader >>> .el-progress-bar__outer {
-  background-color: #565656;
-  border-radius: 0;
-}
-.loader >>> .el-progress-bar__inner {
-  border-radius: 0;
+  background-color: #333333;
 }
 </style>

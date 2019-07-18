@@ -12,9 +12,14 @@
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
-  name: 'app',
+  name: 'App',
   data () {
     return {}
+  },
+  computed: {
+    ...mapGetters([
+      'isApplicationOnline'
+    ])
   },
   created () {
     window.addEventListener('online', this.onHandleOnlineStatus)
@@ -33,11 +38,6 @@ export default {
           if (isOnline) this.$router.push('/')
         })
     }
-  },
-  computed: {
-    ...mapGetters([
-      'isApplicationOnline'
-    ])
   }
 }
 </script>
@@ -46,6 +46,11 @@ export default {
 @font-face {
   font-family: "IBM Plex Sans";
   src: url("assets/fonts/IBM_Plex_Sans/IBMPlexSans-Medium.ttf");
+}
+
+@font-face {
+  font-family: "IBM Plex Sans Regular";
+  src: url("assets/fonts/IBM_Plex_Sans/IBMPlexSans-Regular.ttf");
 }
 
 html {
@@ -71,7 +76,7 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
-  background: #363636;
+  background: #000000;
 }
 
 a {
@@ -102,6 +107,47 @@ a:hover {
 .sora-button.black {
   background-color: #000000 !important;
   color: #ffffff            !important;
+}
+
+.black-button {
+  background-color: #282828  !important;
+  color: #FFFFFF             !important;
+  border: 0                    !important;
+  text-transform: uppercase    !important;
+  border-radius: 10px          !important;
+  font-size: 0.8rem            !important;
+  line-height: 1rem            !important;
+  padding: 1.2rem 1.5rem       !important;
+}
+
+.black-button:hover {
+  transform: scale(1.05);
+}
+
+.black-button:hover .black-button_icon {
+  animation: spin 0.1s linear forwards;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(180deg);
+  }
+}
+
+.black-button span {
+  display: flex;
+  justify-content: center;
+}
+
+.black-button_icon {
+  display: block;
+  height: 1rem;
+  width: 1rem;
+  margin-right: 0.9rem;
+}
+
+#app .el-divider {
+  background-color: #333333;
 }
 
 /*

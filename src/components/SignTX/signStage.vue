@@ -3,14 +3,21 @@
   SPDX-License-Identifier: Apache-2.0
 -->
 <template>
-  <el-form label-position="top" label-width="100px" :model="sign">
+  <el-form
+    label-position="top"
+    label-width="100px"
+    :model="sign"
+  >
     <el-form-item label="Private key">
-      <el-row type="flex" justify="space-between">
+      <el-row
+        type="flex"
+        justify="space-between"
+      >
         <el-col :span="22">
           <el-input
+            v-model="sign.privateKey"
             class="form_input-upload"
             name="privateKey"
-            v-model="sign.privateKey"
             placeholder="Upload your private key"
             type="password"
           />
@@ -30,15 +37,15 @@
     </el-form-item>
     <el-form-item label="Quorum">
       <el-input
-        name="quorum"
         v-model="sign.quorum"
+        name="quorum"
         placeholder="Set your account quorum"
       />
     </el-form-item>
     <el-form-item label="Account ID">
       <el-input
-        name="accountId"
         v-model="sign.creatorAccountId"
+        name="accountId"
         placeholder="Set your account id"
       />
     </el-form-item>

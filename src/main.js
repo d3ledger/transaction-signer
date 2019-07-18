@@ -10,6 +10,7 @@ import store from './store'
 import './plugins/element'
 import './plugins/fontawesome'
 import './plugins/electron'
+import './plugins/localstorage'
 
 Vue.config.productionTip = false
 
