@@ -146,6 +146,10 @@ a:hover {
   margin-right: 0.9rem;
 }
 
+#app .el-divider {
+  background-color: #333333;
+}
+
 /*
  * Input
  */
