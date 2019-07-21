@@ -27,23 +27,26 @@ const defaultRouter = new Router({
     {
       path: '/dashboard',
       name: 'dashboard',
-      component: lazyView('Dashboard')
-    },
-    {
-      path: '/keypair',
-      name: 'keypair',
-      component: lazyView('KeyPair')
+      component: lazyView('Dashboard'),
+      children: [
+        {
+          path: '/sign-tx',
+          name: 'sign-tx',
+          component: lazyView('SignTX')
+        },
+        {
+          path: '/keypair',
+          name: 'keypair',
+          component: lazyView('KeyPair')
+        }
+      ]
     },
     {
       path: '/create-tx',
       name: 'create-tx',
       component: lazyView('CreateTX')
-    },
-    {
-      path: '/sign-tx',
-      name: 'sign-tx',
-      component: lazyView('SignTX')
     }
+
   ]
 })
 
