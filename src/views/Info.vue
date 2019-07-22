@@ -9,7 +9,7 @@
         <img src="@/assets/icons/lock.svg">
       </div>
       <el-button
-        class="black-button"
+        class="app_button"
         @click="handleContinue"
       >
         Get started
@@ -75,12 +75,16 @@ export default {
 </script>
 
 <style scoped>
+.info_wrapper {
+  background: #000000;
+  height: 100vh;
+}
 .logo_wrapper {
   display: flex;
   justify-content: center;
   padding: 2rem;
 }
-.logo_wrapper > .black-button {
+.logo_wrapper > .app_button {
   position: absolute;
   top: 2rem;
   right: 2rem;

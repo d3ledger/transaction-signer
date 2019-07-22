@@ -66,9 +66,21 @@ html {
   font-family: element-icons !important;
 }
 
-[class^="el-"]:not(i):not([class*='el-icon']),
-[class*="el-"]:not(i):not([class*='el-icon']) {
-  font-family: 'IBM Plex Sans', sans-serif !important;
+.el-tooltip__popper.is-light {
+  border-radius: 0.5rem;
+  /* border: solid 1px #cdcdcd !important; */
+}
+
+[id^="el-tooltip-"],
+[id*="el-tooltip-"] {
+  font-family: 'IBM Plex Sans Regular' !important;
+  width: 24rem;
+  font-size: 1rem !important;
+}
+
+[class^="el-"]:not(i):not([class*='el-icon']):not([class*='el-tooltip']),
+[class*="el-"]:not(i):not([class*='el-icon']):not([class*='el-tooltip']) {
+  font-family: 'IBM Plex Sans', sans-serif;
 }
 
 #app {
@@ -76,7 +88,7 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
-  background: #000000;
+  background: #ffffff;
 }
 
 a {
@@ -91,7 +103,7 @@ a:hover {
 }
 
 .sora-button {
-  background-color: #ffffff !important;
+  background: #ffffff !important;
   color: #000000            !important;
   border: 0                   !important;
   text-transform: uppercase   !important;
@@ -101,16 +113,16 @@ a:hover {
 }
 
 .sora-button.red {
-  background-color: #e43e33 !important;
+  background: #e43e33 !important;
   color: #ffffff            !important;
 }
 .sora-button.black {
-  background-color: #000000 !important;
+  background: #000000 !important;
   color: #ffffff            !important;
 }
 
-.black-button {
-  background-color: #282828  !important;
+.app_button {
+  background: #282828  !important;
   color: #FFFFFF             !important;
   border: 0                    !important;
   text-transform: uppercase    !important;
@@ -120,11 +132,22 @@ a:hover {
   padding: 1.2rem 1.5rem       !important;
 }
 
-.black-button:hover {
+.app_button.black {
+  background: #000000 !important;
+  border: solid 1px #000000 !important;
+}
+
+.app_button.white {
+  background: #ffffff !important;
+  border: solid 1px #000000 !important;
+  color: #000000            !important;
+}
+
+.app_button:hover {
   transform: scale(1.05);
 }
 
-.black-button:hover .black-button_icon {
+.app_button:hover .app_button_icon {
   animation: spin 0.1s linear forwards;
 }
 
@@ -134,20 +157,24 @@ a:hover {
   }
 }
 
-.black-button span {
+.app_button span {
   display: flex;
   justify-content: center;
 }
 
-.black-button_icon {
+.app_button_icon {
   display: block;
   height: 1rem;
   width: 1rem;
   margin-right: 0.9rem;
 }
 
+.fullwidth {
+  width: 100%;
+}
+
 #app .el-divider {
-  background-color: #333333;
+  background: #333333;
 }
 
 /*
@@ -158,38 +185,39 @@ a:hover {
 }
 
 #app .el-input__inner {
-  background-color: rgba(0, 0, 0, 0.04);
-  color: rgba(0, 0, 0, 0.8);
-  border: 1px solid #dcdfe6;
-  font-weight: 700;
-  height: 4.5rem;
+  background: #f2f2f2;
+  color: #000000;
+  border: 1px solid #cdcdcd;
+  border-radius: 0.8rem;
+  font-weight: 500;
+  height: 4.2rem;
   padding-left: 1.2rem;
   padding-top: 1.2rem;
   line-height: 0;
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 #app .el-input__inner:focus {
-  border: 1px solid #dcdfe6;
+  border: 1px solid #cdcdcd;
   color: rgba(0, 0, 0, 0.8);
-  background-color: #ffffff;
+  background: #ffffff;
   opacity: 1;
 }
 
 #app .el-form-item {
   height: 4.4rem;
-  margin-bottom: 32px;
+  margin-bottom: 0.9rem;
 }
 
 #app .el-form-item__label {
+  font-family: 'IBM Plex Sans Regular';
   line-height: 1;
   position: relative;
   top: 2.5rem;
   z-index: 10;
   margin-left: 1.2rem;
-  font-size: 0.8rem;
-  opacity: 0.56;
-  color: rgba(0, 0, 0, 0.8);;
+  font-size: 0.9rem;
+  color: #000000;
 }
 
 /* #app .el-input--suffix input {
@@ -197,7 +225,7 @@ a:hover {
 } */
 
 #app .el-input-group__append {
-  background-color: #2d2d2d;
+  background: #2d2d2d;
 }
 
 #app .el-input-group__append input {

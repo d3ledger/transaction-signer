@@ -4,7 +4,6 @@
 -->
 <template>
   <el-upload
-    v-if="!rawTx"
     class="upload-transaction fullwidth"
     drag
     action=""
@@ -16,30 +15,16 @@
   >
     <i class="el-icon-upload" />
     <div class="el-upload__text fullwidth">
-      Drop file here or <em>click to upload</em>
+      Drop transaction draft file (.draft) here or <em>click to upload</em>
     </div>
   </el-upload>
-  <div
-    v-else
-    class="transaction"
-  >
-    {{ parsedTx }}
-  </div>
 </template>
 
 <script>
 export default {
   props: {
-    rawTx: {
-      type: Object,
-      default: () => {}
-    },
     uploadFunc: {
       type: Function,
-      required: true
-    },
-    parsedTx: {
-      type: Array,
       required: true
     }
   }

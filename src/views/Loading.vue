@@ -32,12 +32,12 @@
         class="loader_error"
       >
         <el-button
-          class="black-button"
+          class="app_button"
           @click="checkConnection"
         >
           <img
             src="@/assets/icons/reload.svg"
-            class="black-button_icon"
+            class="app_button_icon"
           >
           Try again
         </el-button>
@@ -122,6 +122,10 @@ export default {
 </script>
 
 <style scoped>
+.loading_wrapper {
+  background: #000000;
+  height: 100vh;
+}
 .logo {
   display: flex;
   justify-content: center;
@@ -162,6 +166,6 @@ export default {
   margin-top: 1.5rem;
 }
 .loader >>> .el-progress-bar__outer {
-  background-color: #333333;
+  background: #333333;
 }
 </style>
