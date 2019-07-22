@@ -4,70 +4,47 @@
 -->
 <template>
   <div class="wrapper">
-    <el-card>
-      <div
-        slot="header"
-        class="clearfix"
-      >
-        <span>Sign transaction</span>
-        <el-button
-          style="float: right; padding: 3px 0"
-          type="text"
-          @click="goBack"
-        >
-          Back
-        </el-button>
+    <div class="content">
+      <div class="content-body">
+        <uploadStage
+          v-if="stage === 1"
+          :upload-func="onTxUploaded"
+          :parsed-tx="transactionToShow"
+        />
+        <signStage
+          v-if="stage === 2"
+          :sign.sync="signForm"
+        />
       </div>
-      <div class="content">
-        <div class="content-body">
-          <transition
-            name="slide-fade"
-            mode="out-in"
-          >
-            <uploadStage
-              v-if="stage === 1"
-              :raw-tx="rawTx"
-              :upload-func="onTxUploaded"
-              :parsed-tx="transactionToShow"
-            />
-            <signStage
-              v-if="stage === 2"
-              :sign.sync="signForm"
-            />
-          </transition>
-        </div>
-        <transition
-          name="slide-fade"
-          mode="out-in"
+      <div
+        v-if="stage === 2"
+        class="actions"
+      >
+        <el-row
+          type="flex"
+          justify="space-between"
         >
-          <div
-            v-if="rawTx"
-            class="actions"
-          >
+          <el-col :span="12">
             <el-button
-              class="sora-button red"
-              @click="onReset"
-            >
-              Reset
-            </el-button>
-            <el-button
-              v-if="stage === 1"
-              class="sora-button black"
-              @click="nextStage"
-            >
-              Next
-            </el-button>
-            <el-button
-              v-if="stage === 2"
-              class="sora-button black"
+              class="app_button black"
+              style="width: 97%"
               @click="onSignAndDownload"
             >
-              Sign and Download
+              Sign and download
             </el-button>
-          </div>
-        </transition>
+          </el-col>
+          <el-col :span="12">
+            <el-button
+              class="app_button white"
+              style="width: 97%; float: right"
+              @click="goBack"
+            >
+              Cancel
+            </el-button>
+          </el-col>
+        </el-row>
       </div>
-    </el-card>
+    </div>
   </div>
 </template>
 
@@ -119,7 +96,7 @@ export default {
       'saveRawTransaction'
     ]),
     goBack () {
-      this.$router.push('/dashboard')
+      this.stage = 1
     },
     onTxUploaded (file, fileList) {
       const reader = new FileReader()
@@ -129,6 +106,7 @@ export default {
         this.parseTransaction(UintArray)
           .then((tx) => {
             this.rawTx = tx
+            this.stage = 2
           })
       }
       reader.readAsArrayBuffer(file.raw)
@@ -141,9 +119,6 @@ export default {
         quorum: 0,
         creatorAccountId: ''
       }
-    },
-    nextStage () {
-      this.stage = 2
     },
     onSignAndDownload () {
       if (!this.signForm.privateKey.length) {
@@ -175,9 +150,11 @@ export default {
 .wrapper {
   padding: 2rem;
 }
-.actions {
-  padding: 1rem 0;
-  float: right;
+.content {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  height: 80vh;
 }
 .key {
   padding: 1rem;
@@ -187,21 +164,13 @@ export default {
   padding: 0.3rem 0.5rem;
 }
 
-.transaction {
-  background-color: #fff;
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  width: 100%;
-  height: 180px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
-
 .upload-transaction >>> .el-upload-dragger,
 .upload-transaction >>> .el-upload {
-  width: 100%
+  height: 80vh;
+  width: 100%;
+}
+
+.upload-transaction >>> .el-icon-upload {
+  margin: 20% 0 1rem;
 }
 </style>

@@ -16,12 +16,15 @@ export default {
   name: 'Dashboard',
   components: {
     Menu: lazyComponent('Dashboard/Menu')
+  },
+  beforeCreate () {
+    this.$router.push('/keypair')
   }
 }
 </script>
 
 <style scoped>
 .dashboard {
-  background-color: #ffffff;
+  background: #ffffff;
 }
 </style>

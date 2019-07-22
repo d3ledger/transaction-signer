@@ -16,7 +16,7 @@
           @click="onGoTo(0)"
         >
           <SvgIcon
-            icon-name="Chart"
+            icon-name="KeyIcon"
             icon-class="menu-icon"
             height="12"
           >
@@ -36,7 +36,7 @@
           @click="onGoTo(1)"
         >
           <SvgIcon
-            icon-name="Chart"
+            icon-name="SignIcon"
             icon-class="menu-icon"
           >
             <SignIcon />
@@ -84,11 +84,13 @@ export default {
 .tab {
   display: flex;
   justify-content: center;
-  background-color: #000000;
+  background: #000000;
   color: #ffffff;
   fill: #ffffff;
-  padding: 0.8rem;
+  padding: 0.9rem;
+  height: 3rem;
   text-align: center;
+  align-items: center;
   cursor: pointer;
 }
 .tab .menu-icon {
@@ -96,7 +98,8 @@ export default {
   margin-right: 0.6rem;
 }
 .tab.active {
-  background-color: #ffffff;
+  background: #ffffff;
+  border-bottom: 1px solid #ebebeb;
   color: #000000;
 }
 
