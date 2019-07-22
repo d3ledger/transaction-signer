@@ -26,10 +26,6 @@ export default {
     uploadFunc: {
       type: Function,
       required: true
-    },
-    parsedTx: {
-      type: Array,
-      required: true
     }
   }
 }

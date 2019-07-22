@@ -3,48 +3,84 @@
   SPDX-License-Identifier: Apache-2.0
 -->
 <template>
-  <div class="wrapper">
-    <div class="content">
-      <div class="content-body">
-        <uploadStage
-          v-if="stage === 1"
-          :upload-func="onTxUploaded"
-          :parsed-tx="transactionToShow"
-        />
-        <signStage
-          v-if="stage === 2"
-          :sign.sync="signForm"
-        />
+  <div class="sign-tx">
+    <uploadStage
+      v-if="stage === 1"
+      :upload-func="onTxUploaded"
+      style="padding: 2rem"
+    />
+    <div v-if="stage === 2">
+      <div style="padding: 2rem">
+        <div class="row first">
+          <span>Time</span>
+          <span>{{ transactionToShow[0].time }} </span>
+        </div>
+        <el-divider />
+        <div class="row">
+          <span>Sender</span>
+          <span>{{ transactionToShow[0].params.srcAccountId }}</span>
+        </div>
+        <div class="row">
+          <span>Receiver</span>
+          <span>{{ transactionToShow[0].params.destAccountId }}</span>
+        </div>
+        <el-divider />
+        <div class="row">
+          <span>Amount</span>
+          <span>{{ transactionToShow[0].params.amount }} {{ getAssetName(transactionToShow[0].params.assetId) }}</span>
+        </div>
+        <div class="row">
+          <span>Fee</span>
+          <span>0 {{ getAssetName(transactionToShow[0].params.assetId) }}</span>
+        </div>
+        <el-divider />
+        <div class="row last">
+          <span>Total</span>
+          <span>{{ transactionToShow[0].params.amount }} {{ getAssetName(transactionToShow[0].params.assetId) }}</span>
+        </div>
       </div>
-      <div
-        v-if="stage === 2"
-        class="actions"
-      >
-        <el-row
-          type="flex"
-          justify="space-between"
+      <el-divider />
+      <div class="content-body">
+        <signStage
+          :sign.sync="signForm"
+          style="padding: 0 2rem"
+        />
+        <div
+          class="actions"
+          style="padding: 0 2rem"
         >
-          <el-col :span="12">
-            <el-button
-              class="app_button black"
-              style="width: 97%"
-              @click="onSignAndDownload"
-            >
-              Sign and download
-            </el-button>
-          </el-col>
-          <el-col :span="12">
-            <el-button
-              class="app_button white"
-              style="width: 97%; float: right"
-              @click="goBack"
-            >
-              Cancel
-            </el-button>
-          </el-col>
-        </el-row>
+          <el-row
+            type="flex"
+            justify="space-between"
+          >
+            <el-col :span="12">
+              <el-button
+                class="app_button black"
+                style="width: 97%"
+                @click="onSignAndDownload"
+              >
+                Sign and download
+              </el-button>
+            </el-col>
+            <el-col :span="12">
+              <el-button
+                class="app_button white"
+                style="width: 97%; float: right"
+                @click="goBack"
+              >
+                Cancel
+              </el-button>
+            </el-col>
+          </el-row>
+        </div>
       </div>
     </div>
+    <notification :is-visible.sync="isNotificationVisible">
+      <template slot="message">
+        Signed transaction file (.bin) saved to “Downloads” folder.<br>
+        Do not forget to remove your private key to safe storage
+      </template>
+    </notification>
   </div>
 </template>
 
@@ -56,7 +92,8 @@ export default {
   name: 'SignTx',
   components: {
     uploadStage: lazyComponent('SignTX/uploadStage'),
-    signStage: lazyComponent('SignTX/signStage')
+    signStage: lazyComponent('SignTX/signStage'),
+    Notification: lazyComponent('common/Notification')
   },
   data () {
     return {
@@ -67,7 +104,9 @@ export default {
         privateKey: '',
         quorum: 0,
         creatorAccountId: ''
-      }
+      },
+
+      isNotificationVisible: false
     }
   },
   computed: {
@@ -77,11 +116,13 @@ export default {
     transactionToShow () {
       if (this.transactionToObject) {
         const commandsList = this.transactionToObject.payload.reducedPayload.commandsList
+        const time = this.transactionToObject.payload.reducedPayload.createdTime
         return commandsList.map(c => {
           const keys = Object.keys(c).filter(key => c[key])
           const title = keys[0]
           return {
             title,
+            time,
             params: c[title]
           }
         })
@@ -128,7 +169,7 @@ export default {
       this.onSign()
         .then(tx => this.onSaveTransaction(tx))
         .then(() => {
-          this.$message('Signed and saved to download folder!')
+          this.isNotificationVisible = true
           this.onReset()
         })
     },
@@ -141,20 +182,21 @@ export default {
     onSaveTransaction (tx) {
       const path = this.$electron.remote.app.getPath('downloads')
       this.saveRawTransaction({ tx, path })
+    },
+    getAssetName (assetId) {
+      return assetId.split('#')[0]
     }
   }
 }
 </script>
 
 <style scoped>
-.wrapper {
-  padding: 2rem;
-}
 .content {
   display: flex;
   justify-content: space-between;
   flex-direction: column;
   height: 80vh;
+  padding: 2rem 0;
 }
 .key {
   padding: 1rem;
@@ -172,5 +214,26 @@ export default {
 
 .upload-transaction >>> .el-icon-upload {
   margin: 20% 0 1rem;
+}
+
+.sign-tx >>> .el-divider {
+  background: #ebebeb !important;
+  margin: 0px;
+}
+
+.actions {
+  margin-top: 4.5rem;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.6rem 0;
+}
+.row.first {
+  margin-bottom: 0.6rem;
+}
+.row.last {
+  margin-top: 0.6rem;
 }
 </style>
