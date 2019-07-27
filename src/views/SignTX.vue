@@ -26,17 +26,21 @@
         </div>
         <el-divider />
         <div class="row">
-          <span>Amount</span>
+          <span>Amount <span v-if="transactionToShow[2]">(give)</span></span>
           <span>{{ transactionToShow[0].params.amount }} {{ getAssetName(transactionToShow[0].params.assetId) }}</span>
         </div>
         <div class="row">
           <span>Fee</span>
-          <span>0 {{ getAssetName(transactionToShow[0].params.assetId) }}</span>
+          <span>{{ feeAmount }} {{ getAssetName(transactionToShow[0].params.assetId) }}</span>
         </div>
         <el-divider />
         <div class="row last">
-          <span>Total</span>
-          <span>{{ transactionToShow[0].params.amount }} {{ getAssetName(transactionToShow[0].params.assetId) }}</span>
+          <span>Total <span v-if="transactionToShow[2]">give</span></span> 
+          <span>{{ Number(transactionToShow[0].params.amount) + Number(feeAmount) }} {{ getAssetName(transactionToShow[0].params.assetId) }}</span>
+        </div>
+        <div class="row last" v-if="transactionToShow[2]">
+          <span>Total recieve</span>
+          <span>{{ transactionToShow[2].params.amount }} {{ getAssetName(transactionToShow[2].params.assetId) }}</span>
         </div>
       </div>
       <el-divider />
@@ -87,6 +91,7 @@
 <script>
 import { mapActions } from 'vuex'
 import { lazyComponent } from '@/router'
+import cloneDeep from 'lodash/fp/cloneDeep'
 
 export default {
   name: 'SignTx',
@@ -99,6 +104,7 @@ export default {
     return {
       rawTx: undefined,
       stage: 1,
+      indexToSign: 0,
 
       signForm: {
         privateKey: '',
@@ -114,9 +120,48 @@ export default {
       return this.rawTx ? this.rawTx.toObject() : undefined
     },
     transactionToShow () {
-      if (this.transactionToObject) {
-        const commandsList = this.transactionToObject.payload.reducedPayload.commandsList
-        const time = this.transactionToObject.payload.reducedPayload.createdTime
+      let tx = cloneDeep(this.transactionToObject)
+      if (tx.transactionsList) {
+        
+        let fromTransaction = tx.transactionsList[0]
+        let toTransaction = tx.transactionsList[1]
+
+        if (fromTransaction.signaturesList.length > 0) {
+          [fromTransaction, toTransaction] = [toTransaction, fromTransaction]
+          this.indexToSign = 1
+        }
+
+        const fromCommandsList = fromTransaction.payload.reducedPayload.commandsList
+        const toCommandsList = toTransaction.payload.reducedPayload.commandsList
+        
+        const time = fromTransaction.payload.reducedPayload.createdTime
+        if (fromCommandsList.length === 2) {
+          // swap transfer and billing commands
+          [fromCommandsList[0], fromCommandsList[1]] = [fromCommandsList[1], fromCommandsList[0]] 
+        } else {
+          fromCommandsList.push({ params : { amount : 0 } })
+        }
+        if (toCommandsList.length === 2) {
+          // swap transfer and billing commands
+          [toCommandsList[0], toCommandsList[1]] = [toCommandsList[1], toCommandsList[0]] 
+        }
+        const commandsList = [...fromCommandsList, ...toCommandsList] 
+        return commandsList.map(c => {
+          const keys = Object.keys(c).filter(key => c[key])
+          const title = keys[0]
+          return {
+            title,
+            time,
+            params: c[title]
+          }
+        })
+      } else {
+        const commandsList = tx.payload.reducedPayload.commandsList
+        const time = tx.payload.reducedPayload.createdTime
+        if (commandsList.length === 2) {
+          // swap transfer and billing commands
+          [commandsList[0], commandsList[1]] = [commandsList[1], commandsList[0]] 
+        }
         return commandsList.map(c => {
           const keys = Object.keys(c).filter(key => c[key])
           const title = keys[0]
@@ -128,12 +173,17 @@ export default {
         })
       }
       return []
-    }
+    },
+    feeAmount () {
+      return this.transactionToShow[1] ? this.transactionToShow[1].params.amount : 0
+    },
   },
   methods: {
     ...mapActions([
       'parseTransaction',
+      'parseTransactions',
       'signTransaction',
+      'signTransactionInList',
       'saveRawTransaction'
     ]),
     goBack () {
@@ -144,17 +194,26 @@ export default {
       reader.onload = (ev) => {
         const bytesArray = ev.target.result || []
         const UintArray = new Uint8Array(bytesArray)
-        this.parseTransaction(UintArray)
-          .then((tx) => {
-            this.rawTx = tx
-            this.stage = 2
-          })
+        try {
+          this.parseTransaction(UintArray)
+            .then((tx) => {
+              this.rawTx = tx
+              this.stage = 2
+            })
+        } catch (error) {
+          this.parseTransactions(UintArray)
+            .then((tx) => {
+              this.rawTx = tx
+              this.stage = 2
+            })
+        }
       }
       reader.readAsArrayBuffer(file.raw)
     },
     onReset () {
       this.rawTx = undefined
       this.stage = 1
+      this.indexToSign = 0
       this.signForm = {
         privateKey: '',
         quorum: 0,
@@ -174,10 +233,21 @@ export default {
         })
     },
     onSign () {
-      return this.signTransaction({
-        transaction: this.rawTx,
-        ...this.signForm
-      })
+      if (this.transactionToObject.transactionsList) {
+
+        const txList = this.rawTx.getTransactionsList()
+        txList.forEach(tx => tx.clearSignaturesList())
+        return this.signTransactionInList({
+          transactionList: txList,
+          index: this.indexToSign,
+          ...this.signForm,
+        })
+      } else {
+        return this.signTransaction({
+          transaction: this.rawTx,
+          ...this.signForm,
+        })
+      }
     },
     onSaveTransaction (tx) {
       const path = this.$electron.remote.app.getPath('downloads')

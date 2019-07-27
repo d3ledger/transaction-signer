@@ -6,6 +6,7 @@ import {
   txHelper
 } from 'iroha-helpers'
 import Transaction from 'iroha-helpers/lib/proto/transaction_pb'
+import TxList from 'iroha-helpers/lib/proto/endpoint_pb'
 
 export function createCommand (commandName, params) {
   const tx = txHelper.addCommand(
@@ -24,4 +25,8 @@ export function transactionToBinary (tx) {
 
 export function binaryToTransaction (bytes) {
   return Transaction.Transaction.deserializeBinary(bytes)
+}
+
+export function binaryToTxList (bytes) {
+  return TxList.TxList.deserializeBinary(bytes)
 }
