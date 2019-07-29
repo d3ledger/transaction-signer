@@ -36,7 +36,7 @@
         <el-divider />
         <div class="row last">
           <span>Total <span v-if="transactionToShow[2]">give</span></span> 
-          <span>{{ Number(transactionToShow[0].params.amount) + Number(feeAmount) }} {{ getAssetName(transactionToShow[0].params.assetId) }}</span>
+          <span>{{ total}} {{ getAssetName(transactionToShow[0].params.assetId) }}</span>
         </div>
         <div class="row last" v-if="transactionToShow[2]">
           <span>Total recieve</span>
@@ -92,6 +92,8 @@
 import { mapActions } from 'vuex'
 import { lazyComponent } from '@/router'
 import cloneDeep from 'lodash/fp/cloneDeep'
+import BigNumber from 'bignumber.js'
+BigNumber.set({ EXPONENTIAL_AT: [-19, 20] })
 
 export default {
   name: 'SignTx',
@@ -177,6 +179,9 @@ export default {
     feeAmount () {
       return this.transactionToShow[1] ? this.transactionToShow[1].params.amount : 0
     },
+    total () {
+      return BigNumber(transactionToShow[0].params.amount || 0).plus(fee)
+    }
   },
   methods: {
     ...mapActions([
