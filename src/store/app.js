@@ -16,7 +16,8 @@ import {
 import {
   createCommand,
   transactionToBinary,
-  binaryToTransaction
+  binaryToTransaction,
+  binaryToTxList
 } from '@/utils/helpers'
 
 import format from 'date-fns/format'
@@ -145,15 +146,21 @@ const actions = {
       binaryToTransaction(UintArray)
     )
   },
-  signTransaction ({ commit }, info) {
+  parseTransactions ({ commit }, UintArray) {
+    commit(types.PARSE_TRANSACTION)
+    return Promise.resolve(
+      binaryToTxList(UintArray)
+    )
+  },
+  signTransaction ({ commit }, { transaction, privateKey }) {
     commit(types.SIGN_TRANSACTION)
-    const { transaction, privateKey, creatorAccountId, quorum } = info
-    const tx = txHelper.addMeta(transaction, {
-      quorum: quorum * 2,
-      creatorAccountId
-    })
-    const signed = signWithArrayOfKeys(tx, [privateKey])
+    const signed = signWithArrayOfKeys(transaction, [privateKey])
     return Promise.resolve(signed)
+  },
+  signTransactionInList ({ commit }, { transactionList, index, privateKey }) {
+    commit(types.SIGN_TRANSACTION)
+    transactionList[index] = signWithArrayOfKeys(transactionList[index], [privateKey])
+    return Promise.resolve(txHelper.createTxListFromArray(txHelper.addBatchMeta(transactionList, 0)))
   }
 }
 
