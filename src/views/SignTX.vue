@@ -35,7 +35,7 @@
         </div>
         <el-divider />
         <div class="row last">
-          <span>Total <span v-if="transactionToShow[2]">give</span></span> 
+          <span>Total <span v-if="transactionToShow[2]">give</span></span>
           <span>{{ total}} {{ getAssetName(transactionToShow[0].params.assetId) }}</span>
         </div>
         <div class="row last" v-if="transactionToShow[2]">
@@ -46,7 +46,9 @@
       <el-divider />
       <div class="content-body">
         <signStage
-          :sign.sync="signForm"
+          v-for="(privateKey, index) in privateKeys"
+          :key="index"
+          :onChange="(value) => onSetKey(index, value)"
           style="padding: 0 2rem"
         />
         <div
@@ -89,6 +91,7 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import { mapActions } from 'vuex'
 import { lazyComponent } from '@/router'
 import cloneDeep from 'lodash/fp/cloneDeep'
@@ -107,13 +110,7 @@ export default {
       rawTx: undefined,
       stage: 1,
       indexToSign: 0,
-
-      signForm: {
-        privateKey: '',
-        quorum: 0,
-        creatorAccountId: ''
-      },
-
+      privateKeys: [],
       isNotificationVisible: false
     }
   },
@@ -121,50 +118,29 @@ export default {
     transactionToObject () {
       return this.rawTx ? this.rawTx.toObject() : undefined
     },
-    transactionToShow () {
-      let tx = cloneDeep(this.transactionToObject)
+    transactions () {
+      const tx = cloneDeep(this.transactionToObject)
       if (tx.transactionsList) {
-        
-        let fromTransaction = tx.transactionsList[0]
-        let toTransaction = tx.transactionsList[1]
-
-        if (fromTransaction.signaturesList.length > 0) {
-          [fromTransaction, toTransaction] = [toTransaction, fromTransaction]
+        let txList = tx.transactionsList
+        if (txList[0].signaturesList.length === txList[0].payload.reducedPayload.quorum) {
+          [txList[0], txList[1]] = [txList[1], txList[0]]
           this.indexToSign = 1
         }
 
-        const fromCommandsList = fromTransaction.payload.reducedPayload.commandsList
-        const toCommandsList = toTransaction.payload.reducedPayload.commandsList
-        
-        const time = fromTransaction.payload.reducedPayload.createdTime
-        if (fromCommandsList.length === 2) {
-          // swap transfer and billing commands
-          [fromCommandsList[0], fromCommandsList[1]] = [fromCommandsList[1], fromCommandsList[0]] 
-        } else {
-          fromCommandsList.push({ params : { amount : 0 } })
-        }
-        if (toCommandsList.length === 2) {
-          // swap transfer and billing commands
-          [toCommandsList[0], toCommandsList[1]] = [toCommandsList[1], toCommandsList[0]] 
-        }
-        const commandsList = [...fromCommandsList, ...toCommandsList] 
-        return commandsList.map(c => {
-          const keys = Object.keys(c).filter(key => c[key])
-          const title = keys[0]
-          return {
-            title,
-            time,
-            params: c[title]
-          }
-        })
+        return txList
       } else {
+        return [tx]
+      }
+    },
+    transactionToShow () {
+      return this.transactions.reduce((result, tx) => {
         const commandsList = tx.payload.reducedPayload.commandsList
         const time = tx.payload.reducedPayload.createdTime
         if (commandsList.length === 2) {
           // swap transfer and billing commands
-          [commandsList[0], commandsList[1]] = [commandsList[1], commandsList[0]] 
+          [commandsList[0], commandsList[1]] = [commandsList[1], commandsList[0]]
         }
-        return commandsList.map(c => {
+        return result.concat(commandsList.map(c => {
           const keys = Object.keys(c).filter(key => c[key])
           const title = keys[0]
           return {
@@ -172,15 +148,20 @@ export default {
             time,
             params: c[title]
           }
-        })
-      }
-      return []
+        }))
+      }, [])
     },
     feeAmount () {
       return this.transactionToShow[1] ? this.transactionToShow[1].params.amount : 0
     },
     total () {
-      return BigNumber(transactionToShow[0].params.amount || 0).plus(fee)
+      return BigNumber(this.transactionToShow[0].params.amount || 0).plus(this.feeAmount)
+    },
+    signatoriesAmount () {
+      return this.transactions[0].payload.reducedPayload.quorum - this.transactions[0].signaturesList.length
+    },
+    filteredKeys () {
+      return this.privateKeys.filter(key => key && key.length > 0)
     }
   },
   methods: {
@@ -194,6 +175,9 @@ export default {
     goBack () {
       this.stage = 1
     },
+    onSetKey (index, value) {
+      Vue.set(this.privateKeys, index, value)
+    },
     onTxUploaded (file, fileList) {
       const reader = new FileReader()
       reader.onload = (ev) => {
@@ -205,11 +189,17 @@ export default {
               this.rawTx = tx
               this.stage = 2
             })
+            .then(() => {
+              this.privateKeys = new Array(this.signatoriesAmount)
+            })
         } catch (error) {
           this.parseTransactions(UintArray)
             .then((tx) => {
               this.rawTx = tx
               this.stage = 2
+            })
+            .then(() => {
+              this.privateKeys = new Array(this.signatoriesAmount)
             })
         }
       }
@@ -219,14 +209,10 @@ export default {
       this.rawTx = undefined
       this.stage = 1
       this.indexToSign = 0
-      this.signForm = {
-        privateKey: '',
-        quorum: 0,
-        creatorAccountId: ''
-      }
+      this.privateKeys = []
     },
     onSignAndDownload () {
-      if (!this.signForm.privateKey.length) {
+      if (!this.filteredKeys.length) {
         this.$message.error('Private key can\'t be empty!')
         return
       }
@@ -238,19 +224,18 @@ export default {
         })
     },
     onSign () {
-      if (this.transactionToObject.transactionsList) {
-
+      if (this.transactions.length === 1) {
+        return this.signTransaction({
+          transaction: this.rawTx,
+          privateKeys: this.filteredKeys
+        })
+      } else {
         const txList = this.rawTx.getTransactionsList()
         txList.forEach(tx => tx.clearSignaturesList())
         return this.signTransactionInList({
           transactionList: txList,
           index: this.indexToSign,
-          ...this.signForm,
-        })
-      } else {
-        return this.signTransaction({
-          transaction: this.rawTx,
-          ...this.signForm,
+          privateKeys: this.filteredKeys
         })
       }
     },

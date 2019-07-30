@@ -8,14 +8,16 @@
     label-width="100px"
     :model="sign"
   >
-    <el-form-item label="Private key">
+    <el-form-item
+      label="Private key"
+    >
       <el-row
         type="flex"
         justify="space-between"
       >
         <el-col :span="24">
           <el-input
-            v-model="sign.privateKey"
+            v-model="privateKey"
             class="form_input-upload"
             name="privateKey"
             placeholder="Upload your private key"
@@ -26,7 +28,7 @@
             class="form_upload-button"
             :auto-upload="false"
             :show-file-list="false"
-            :on-change="onFileChosen"
+            :on-change="(file, fileList) => onFileChosen(file, fileList, key)"
           >
             <el-button>
               <img
@@ -45,16 +47,22 @@
 <script>
 export default {
   props: {
-    sign: {
-      type: Object,
+    onChange: {
+      type: Function,
       required: true
+    },
+  },
+  data () {
+    return {
+      privateKey: ''
     }
   },
   methods: {
-    onFileChosen (file, fileList) {
+    onFileChosen (file, fileList, index) {
       const reader = new FileReader()
       reader.onload = (ev) => {
-        this.sign.privateKey = (ev.target.result || '').trim()
+        this.privateKey = (ev.target.result || '').trim()
+        this.onChange(this.privateKey)
       }
       reader.readAsText(file.raw)
     }
