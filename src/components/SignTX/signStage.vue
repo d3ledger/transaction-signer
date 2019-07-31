@@ -47,22 +47,16 @@
 <script>
 export default {
   props: {
-    onChange: {
-      type: Function,
+    privateKey: {
+      type: String,
       required: true
     },
-  },
-  data () {
-    return {
-      privateKey: ''
-    }
   },
   methods: {
     onFileChosen (file, fileList, index) {
       const reader = new FileReader()
       reader.onload = (ev) => {
         this.privateKey = (ev.target.result || '').trim()
-        this.onChange(this.privateKey)
       }
       reader.readAsText(file.raw)
     }

@@ -46,9 +46,7 @@
       <el-divider />
       <div class="content-body">
         <signStage
-          v-for="(privateKey, index) in privateKeys"
-          :key="index"
-          :onChange="(value) => onSetKey(index, value)"
+          :privateKey:sync="privateKey"
           style="padding: 0 2rem"
         />
         <div
@@ -110,7 +108,7 @@ export default {
       rawTx: undefined,
       stage: 1,
       indexToSign: 0,
-      privateKeys: [],
+      privateKey: '',
       isNotificationVisible: false
     }
   },
@@ -133,6 +131,7 @@ export default {
       }
     },
     transactionToShow () {
+      console.log(this.transactions)
       return this.transactions.reduce((result, tx) => {
         const commandsList = tx.payload.reducedPayload.commandsList
         const time = tx.payload.reducedPayload.createdTime
@@ -156,12 +155,6 @@ export default {
     },
     total () {
       return BigNumber(this.transactionToShow[0].params.amount || 0).plus(this.feeAmount)
-    },
-    signatoriesAmount () {
-      return this.transactions[0].payload.reducedPayload.quorum - this.transactions[0].signaturesList.length
-    },
-    filteredKeys () {
-      return this.privateKeys.filter(key => key && key.length > 0)
     }
   },
   methods: {
@@ -175,9 +168,6 @@ export default {
     goBack () {
       this.stage = 1
     },
-    onSetKey (index, value) {
-      Vue.set(this.privateKeys, index, value)
-    },
     onTxUploaded (file, fileList) {
       const reader = new FileReader()
       reader.onload = (ev) => {
@@ -190,7 +180,7 @@ export default {
               this.stage = 2
             })
             .then(() => {
-              this.privateKeys = new Array(this.signatoriesAmount)
+              this.privateKey = ''
             })
         } catch (error) {
           this.parseTransactions(UintArray)
@@ -199,7 +189,7 @@ export default {
               this.stage = 2
             })
             .then(() => {
-              this.privateKeys = new Array(this.signatoriesAmount)
+              this.privateKey = ''
             })
         }
       }
@@ -209,10 +199,10 @@ export default {
       this.rawTx = undefined
       this.stage = 1
       this.indexToSign = 0
-      this.privateKeys = []
+      this.privateKey = ''
     },
     onSignAndDownload () {
-      if (!this.filteredKeys.length) {
+      if (!this.privateKey.length) {
         this.$message.error('Private key can\'t be empty!')
         return
       }
@@ -227,7 +217,7 @@ export default {
       if (this.transactions.length === 1) {
         return this.signTransaction({
           transaction: this.rawTx,
-          privateKeys: this.filteredKeys
+          privateKey: this.privateKey
         })
       } else {
         const txList = this.rawTx.getTransactionsList()
@@ -235,7 +225,7 @@ export default {
         return this.signTransactionInList({
           transactionList: txList,
           index: this.indexToSign,
-          privateKeys: this.filteredKeys
+          privateKey: this.privateKey
         })
       }
     },

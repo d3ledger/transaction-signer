@@ -152,14 +152,14 @@ const actions = {
       binaryToTxList(UintArray)
     )
   },
-  signTransaction ({ commit }, { transaction, privateKeys }) {
+  signTransaction ({ commit }, { transaction, privateKey }) {
     commit(types.SIGN_TRANSACTION)
-    const signed = signWithArrayOfKeys(transaction, privateKeys)
+    const signed = signWithArrayOfKeys(transaction, [privateKey])
     return Promise.resolve(signed)
   },
-  signTransactionInList ({ commit }, { transactionList, index, privateKeys }) {
+  signTransactionInList ({ commit }, { transactionList, index, privateKey }) {
     commit(types.SIGN_TRANSACTION)
-    transactionList[index] = signWithArrayOfKeys(transactionList[index], privateKeys)
+    transactionList[index] = signWithArrayOfKeys(transactionList[index], [privateKey])
     return Promise.resolve(txHelper.createTxListFromArray(txHelper.addBatchMeta(transactionList, 0)))
   }
 }
