@@ -46,7 +46,7 @@
       <el-divider />
       <div class="content-body">
         <signStage
-          :privateKey:sync="privateKey"
+          :sign.sync="sign"
           style="padding: 0 2rem"
         />
         <div
@@ -108,7 +108,9 @@ export default {
       rawTx: undefined,
       stage: 1,
       indexToSign: 0,
-      privateKey: '',
+      sign: {
+        privateKey: ''
+      },
       isNotificationVisible: false
     }
   },
@@ -182,7 +184,7 @@ export default {
               this.stage = 2
             })
             .then(() => {
-              this.privateKey = ''
+              this.sign.privateKey = ''
             })
         } catch (error) {
           this.parseTransactions(UintArray)
@@ -191,7 +193,7 @@ export default {
               this.stage = 2
             })
             .then(() => {
-              this.privateKey = ''
+              this.sign.privateKey = ''
             })
         }
       }
@@ -201,10 +203,10 @@ export default {
       this.rawTx = undefined
       this.stage = 1
       this.indexToSign = 0
-      this.privateKey = ''
+      this.sign.privateKey = ''
     },
     onSignAndDownload () {
-      if (!this.privateKey.length) {
+      if (!this.sign.privateKey.length) {
         this.$message.error('Private key can\'t be empty!')
         return
       }
@@ -219,7 +221,7 @@ export default {
       if (this.transactions.length === 1) {
         return this.signTransaction({
           transaction: this.rawTx,
-          privateKey: this.privateKey
+          privateKey: this.sign.privateKey
         })
       } else {
         const txList = this.rawTx.getTransactionsList()
@@ -227,7 +229,7 @@ export default {
         return this.signTransactionInList({
           transactionList: txList,
           index: this.indexToSign,
-          privateKey: this.privateKey
+          privateKey: this.sign.privateKey
         })
       }
     },

@@ -17,7 +17,7 @@
       >
         <el-col :span="24">
           <el-input
-            v-model="privateKey"
+            v-model="sign.privateKey"
             class="form_input-upload"
             name="privateKey"
             placeholder="Upload your private key"
@@ -47,8 +47,8 @@
 <script>
 export default {
   props: {
-    privateKey: {
-      type: String,
+    sign: {
+      type: Object,
       required: true
     },
   },
@@ -56,7 +56,7 @@ export default {
     onFileChosen (file, fileList, index) {
       const reader = new FileReader()
       reader.onload = (ev) => {
-        this.privateKey = (ev.target.result || '').trim()
+        this.sign.privateKey = (ev.target.result || '').trim()
       }
       reader.readAsText(file.raw)
     }
