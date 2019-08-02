@@ -138,6 +138,8 @@ export default {
         if (commandsList.length === 2) {
           // swap transfer and billing commands
           [commandsList[0], commandsList[1]] = [commandsList[1], commandsList[0]]
+        } else {
+          commandsList.push({ params: { amount: 0 } })
         }
         return result.concat(commandsList.map(c => {
           const keys = Object.keys(c).filter(key => c[key])
