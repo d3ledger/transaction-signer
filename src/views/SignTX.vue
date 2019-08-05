@@ -122,7 +122,7 @@ export default {
       const tx = cloneDeep(this.transactionToObject)
       if (tx.transactionsList) {
         let txList = tx.transactionsList
-        if (txList[0].signaturesList.length === txList[0].payload.reducedPayload.quorum) {
+        if (txList[0].signaturesList.length === Math.round(txList[0].payload.reducedPayload.quorum / 2)) {
           [txList[0], txList[1]] = [txList[1], txList[0]]
           this.indexToSign = 1
         }
