@@ -34,7 +34,7 @@
           <span>{{ feeAmount }} {{ getAssetName(transactionToShow[0].params.assetId) }}</span>
         </div>
         <el-divider />
-        <div v-if="total" class="row last">
+        <div v-if="total > 0" class="row last">
           <span>Total <span v-if="transactionToShow[2]">give</span></span>
           <span>{{ total}} {{ getAssetName(transactionToShow[0].params.assetId) }}</span>
         </div>
@@ -242,7 +242,7 @@ export default {
       this.saveRawTransaction({ tx, path })
     },
     getAssetName (assetId) {
-      return assetId.split('#')[0]
+      return assetId ? assetId.split('#')[0] : ''
     }
   }
 }
