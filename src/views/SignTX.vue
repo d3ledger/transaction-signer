@@ -13,7 +13,7 @@
       <div style="padding: 2rem">
         <div class="row first">
           <span>Time</span>
-          <span>{{ format(transactionToShow[0].time, 'MM-DD-YYYY-HH-mm-ss') }} </span>
+          <span>{{ format(transactionToShow[0].time, 'HH:mm:ss MM/DD/YYYY') }} </span>
         </div>
         <el-divider />
         <div v-if="transactionToShow[0].params.srcAccountId" class="row">
