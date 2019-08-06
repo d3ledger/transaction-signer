@@ -13,28 +13,28 @@
       <div style="padding: 2rem">
         <div class="row first">
           <span>Time</span>
-          <span>{{ transactionToShow[0].time }} </span>
+          <span>{{ format(transactionToShow[0].time, 'MM-DD-YYYY-HH-mm-ss') }} </span>
         </div>
         <el-divider />
-        <div class="row">
+        <div v-if="transactionToShow[0].params.srcAccountId" class="row">
           <span>Sender</span>
           <span>{{ transactionToShow[0].params.srcAccountId }}</span>
         </div>
-        <div class="row">
+        <div v-if="transactionToShow[0].params.destAccountId" class="row">
           <span>Receiver</span>
           <span>{{ transactionToShow[0].params.destAccountId }}</span>
         </div>
         <el-divider />
-        <div class="row">
+        <div v-if="transactionToShow[0].params.amount" class="row">
           <span>Amount <span v-if="transactionToShow[2]">(give)</span></span>
           <span>{{ transactionToShow[0].params.amount }} {{ getAssetName(transactionToShow[0].params.assetId) }}</span>
         </div>
-        <div class="row">
+        <div v-if="transactionToShow[0].params.amount" class="row">
           <span>Fee</span>
           <span>{{ feeAmount }} {{ getAssetName(transactionToShow[0].params.assetId) }}</span>
         </div>
         <el-divider />
-        <div class="row last">
+        <div v-if="total" class="row last">
           <span>Total <span v-if="transactionToShow[2]">give</span></span>
           <span>{{ total}} {{ getAssetName(transactionToShow[0].params.assetId) }}</span>
         </div>
@@ -93,6 +93,7 @@ import Vue from 'vue'
 import { mapActions } from 'vuex'
 import { lazyComponent } from '@/router'
 import cloneDeep from 'lodash/fp/cloneDeep'
+import format from 'date-fns/format'
 import BigNumber from 'bignumber.js'
 BigNumber.set({ EXPONENTIAL_AT: [-19, 20] })
 
@@ -111,7 +112,7 @@ export default {
       sign: {
         privateKey: ''
       },
-      isNotificationVisible: false
+      isNotificationVisible: false,
     }
   },
   computed: {
@@ -169,6 +170,9 @@ export default {
       'signTransactionInList',
       'saveRawTransaction'
     ]),
+    format (...args) {
+      return format(...args)
+    },
     goBack () {
       this.stage = 1
     },
