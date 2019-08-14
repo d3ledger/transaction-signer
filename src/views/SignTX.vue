@@ -10,39 +10,18 @@
       style="padding: 2rem"
     />
     <div v-if="stage === 2">
-      <div style="padding: 2rem">
-        <div class="row first">
-          <span>Time</span>
-          <span>{{ format(transactionToShow[0].time, 'HH:mm:ss MM/DD/YYYY') }} </span>
-        </div>
-        <el-divider />
-        <div v-if="transactionToShow[0].params.srcAccountId" class="row">
-          <span>Sender</span>
-          <span>{{ transactionToShow[0].params.srcAccountId }}</span>
-        </div>
-        <div v-if="transactionToShow[0].params.destAccountId" class="row">
-          <span>Receiver</span>
-          <span>{{ transactionToShow[0].params.destAccountId }}</span>
-        </div>
-        <el-divider />
-        <div v-if="transactionToShow[0].params.amount" class="row">
-          <span>Amount <span v-if="transactionToShow[2]">(give)</span></span>
-          <span>{{ transactionToShow[0].params.amount }} {{ getAssetName(transactionToShow[0].params.assetId) }}</span>
-        </div>
-        <div v-if="transactionToShow[0].params.amount" class="row">
-          <span>Fee</span>
-          <span>{{ feeAmount }} {{ getAssetName(transactionToShow[0].params.assetId) }}</span>
-        </div>
-        <el-divider />
-        <div v-if="total > 0" class="row last">
-          <span>Total <span v-if="transactionToShow[2]">give</span></span>
-          <span>{{ total}} {{ getAssetName(transactionToShow[0].params.assetId) }}</span>
-        </div>
-        <div class="row last" v-if="transactionToShow[2]">
-          <span>Total recieve</span>
-          <span>{{ transactionToShow[2].params.amount }} {{ getAssetName(transactionToShow[2].params.assetId) }}</span>
-        </div>
-      </div>
+      <parsedTransferAsset
+        v-if="transactionToShow[0].title === 'transferAsset'"
+        :tx="transactionToShow"
+      />
+      <parsedAddSignatory
+        v-if="transactionToShow[0].title === 'addSignatory'"
+        :tx="transactionToShow"
+      />
+      <parsedSetAccountDetail
+        v-if="transactionToShow[0].title === 'setAccountDetail'"
+        :tx="transactionToShow"
+      />
       <el-divider />
       <div class="content-body">
         <signStage
@@ -89,19 +68,20 @@
 </template>
 
 <script>
-import Vue from 'vue'
 import { mapActions } from 'vuex'
 import { lazyComponent } from '@/router'
 import cloneDeep from 'lodash/fp/cloneDeep'
-import format from 'date-fns/format'
-import BigNumber from 'bignumber.js'
-BigNumber.set({ EXPONENTIAL_AT: [-19, 20] })
 
 export default {
   name: 'SignTx',
   components: {
     uploadStage: lazyComponent('SignTX/uploadStage'),
     signStage: lazyComponent('SignTX/signStage'),
+
+    parsedTransferAsset: lazyComponent('SignTX/parsedTx/transferAsset'),
+    parsedAddSignatory: lazyComponent('SignTX/parsedTx/addSignatory'),
+    parsedSetAccountDetail: lazyComponent('SignTX/parsedTx/setAccountDetail'),
+
     Notification: lazyComponent('common/Notification')
   },
   data () {
@@ -112,7 +92,7 @@ export default {
       sign: {
         privateKey: ''
       },
-      isNotificationVisible: false,
+      isNotificationVisible: false
     }
   },
   computed: {
@@ -120,12 +100,13 @@ export default {
       return this.rawTx ? this.rawTx.toObject() : undefined
     },
     transactions () {
+      console.log(this.transactionToObject)
       const tx = cloneDeep(this.transactionToObject)
       if (tx.transactionsList) {
         let txList = tx.transactionsList
         if (txList[0].signaturesList.length === Math.round(txList[0].payload.reducedPayload.quorum / 2)) {
           [txList[0], txList[1]] = [txList[1], txList[0]]
-          this.indexToSign = 1
+          this.$set(this, 'indexToSign', 1)
         }
 
         return txList
@@ -154,12 +135,6 @@ export default {
           }
         }))
       }, [])
-    },
-    feeAmount () {
-      return this.transactionToShow[1] ? this.transactionToShow[1].params.amount : 0
-    },
-    total () {
-      return BigNumber(this.transactionToShow[0].params.amount || 0).plus(this.feeAmount)
     }
   },
   methods: {
@@ -170,9 +145,6 @@ export default {
       'signTransactionInList',
       'saveRawTransaction'
     ]),
-    format (...args) {
-      return format(...args)
-    },
     goBack () {
       this.stage = 1
     },
@@ -186,8 +158,6 @@ export default {
             .then((tx) => {
               this.rawTx = tx
               this.stage = 2
-            })
-            .then(() => {
               this.sign.privateKey = ''
             })
         } catch (error) {
@@ -195,8 +165,6 @@ export default {
             .then((tx) => {
               this.rawTx = tx
               this.stage = 2
-            })
-            .then(() => {
               this.sign.privateKey = ''
             })
         }
@@ -240,9 +208,6 @@ export default {
     onSaveTransaction (tx) {
       const path = this.$electron.remote.app.getPath('downloads')
       this.saveRawTransaction({ tx, path })
-    },
-    getAssetName (assetId) {
-      return assetId ? assetId.split('#')[0] : ''
     }
   }
 }
@@ -281,17 +246,5 @@ export default {
 
 .actions {
   margin-top: 4.5rem;
-}
-
-.row {
-  display: flex;
-  justify-content: space-between;
-  margin: 0.6rem 0;
-}
-.row.first {
-  margin-bottom: 0.6rem;
-}
-.row.last {
-  margin-top: 0.6rem;
 }
 </style>

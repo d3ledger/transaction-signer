@@ -50,7 +50,7 @@ export default {
     sign: {
       type: Object,
       required: true
-    },
+    }
   },
   methods: {
     onFileChosen (file, fileList, index) {

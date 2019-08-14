@@ -241,4 +241,16 @@ a:hover {
 .slide-fade-enter, .slide-fade-leave-to {
   opacity: 0;
 }
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.6rem 0;
+}
+.row.first {
+  margin-bottom: 0.6rem;
+}
+.row.last {
+  margin-top: 0.6rem;
+}
 </style>
