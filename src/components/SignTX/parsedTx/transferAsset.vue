@@ -83,7 +83,7 @@ export default {
     },
     getAssetName (assetId) {
       return assetId ? assetId.split('#')[0] : ''
-    },
+    }
   }
 }
 </script>
