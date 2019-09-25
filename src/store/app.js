@@ -99,7 +99,7 @@ const actions = {
     commit(types.SAVE_KEYS_FILE)
     const downloadsPath = info.path
 
-    const date = format(new Date(), 'MM-DD-YYYY-HH-mm-ss')
+    const date = format(new Date(), 'MM-dd-yyyy-HH-mm-ss')
 
     const privateFileName = `D3-OTS-${date}.priv`
     const publicFileName = `D3-OTS-${date}.pub`
@@ -115,7 +115,7 @@ const actions = {
     commit(types.SAVE_TRANSACTION_FILE)
     const downloadsPath = info.path
 
-    const date = format(new Date(), 'MM-DD-YYYY-HH-mm-ss')
+    const date = format(new Date(), 'MM-dd-yyyy-HH-mm-ss')
 
     const transactionFile = `D3-OTS-Transaction-${date}.bin`
 
@@ -130,7 +130,7 @@ const actions = {
     commit(types.SAVE_RAW_TRANSACTION_FILE)
     const downloadsPath = info.path
 
-    const date = format(new Date(), 'MM-DD-YYYY-HH-mm-ss')
+    const date = format(new Date(), 'MM-dd-yyyy-HH-mm-ss')
 
     const transactionFile = `D3-OTS-Transaction-Signed-${date}.bin`
 

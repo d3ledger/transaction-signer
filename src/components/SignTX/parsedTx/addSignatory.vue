@@ -6,7 +6,7 @@
   <div style="padding: 2rem">
     <div class="row first">
       <span>Time</span>
-      <span>{{ format(tx[0].time, 'HH:mm:ss MM/DD/YYYY') }} </span>
+      <span>{{ format(tx[0].time, 'HH:mm:ss MM/dd/yyyy') }} </span>
     </div>
     <el-divider />
     <div
