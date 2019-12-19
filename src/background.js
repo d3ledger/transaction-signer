@@ -11,6 +11,7 @@ import {
 } from 'vue-cli-plugin-electron-builder/lib'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
+const appName = process.env.APP_NAME || 'D3Ledger'
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -32,7 +33,7 @@ function createWindow () {
     width: 800,
     height: 600,
     resizable: false,
-    title: 'D3 OTS',
+    title: `${appName} OTS`,
     webPreferences: {
       nodeIntegration: true
     }
@@ -110,7 +111,7 @@ if (isDevelopment) {
 function addEditMenu (window) {
   const appMenu = Menu.buildFromTemplate([
     {
-      label: 'D3 OTS',
+      label: `${appName} OTS`,
       submenu: [
         {
           label: 'Version',
@@ -128,7 +129,7 @@ function addEditMenu (window) {
         { type: 'separator' },
         {
           role: 'quit',
-          label: 'Quit D3 OTS'
+          label: `Quit ${appName} OTS`
         }
       ]
     }

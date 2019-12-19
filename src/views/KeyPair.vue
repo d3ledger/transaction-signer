@@ -6,7 +6,7 @@
   <div class="keypair">
     <div class="header">
       <p class="header_msg">
-        A private key file (.priv) is used to verify the rights to spend assets from a D3ledger account.
+        A private key file (.priv) is used to verify the rights to spend assets from a {{ appName }} account.
       </p>
       <p class="header_msg">
         A public key file (.pub) is a cryptographical proxy for a private key.
@@ -55,10 +55,10 @@
                 Using the public key, you can prove to a third party that you own the private key without showing it explicitly.
               </p>
               <p style="margin-bottom: 0.5rem">
-                In D3ledger public keys are used to generate accounts pegged to outside blockchains like Bitcoin or Ethereum.
+                In {{ appName }} public keys are used to generate accounts pegged to outside blockchains like Bitcoin or Ethereum.
               </p>
               <p>
-                You'll be asked your public key every time you need to open an account or to add an asset type in D3ledger.
+                You'll be asked your public key every time you need to open an account or to add an asset type in {{ appName }}.
               </p>
             </div>
             <span><img src="@/assets/icons/help.svg"></span>
@@ -117,6 +117,7 @@ export default {
   },
   data () {
     return {
+      appName: this.$electron.remote.process.env['APP_NAME'],
       info: {
         privateKey: '',
         publicKey: ''
@@ -145,7 +146,8 @@ export default {
       const path = this.$electron.remote.app.getPath('downloads')
       this.saveKeys({
         ...this.info,
-        path
+        path,
+        appName: this.appName
       })
         .then(() => {
           this.isNotificationVisible = true

@@ -5,7 +5,13 @@
 <template>
   <div class="loading_wrapper">
     <div class="logo">
-      <img src="@/assets/icons/logo.svg">
+      <img
+        src="@/assets/icons/logo-sora.svg"
+      >
+      <!-- <img
+        v-else
+        src="@/assets/icons/logo-d3.svg"
+      > -->
     </div>
     <div class="loader">
       <div class="loader_title">
@@ -52,8 +58,8 @@ export default {
   name: 'Loading',
   data () {
     return {
+      appName: this.$electron.remote.process.env['APP_NAME'],
       currentPercent: 0,
-
       loadingInterval: null,
       isApplicationOnlineTemp: true
     }

@@ -101,8 +101,8 @@ const actions = {
 
     const date = format(new Date(), 'MM-dd-yyyy-HH-mm-ss')
 
-    const privateFileName = `D3-OTS-${date}.priv`
-    const publicFileName = `D3-OTS-${date}.pub`
+    const privateFileName = `${info.appName}-OTS-${date}.priv`
+    const publicFileName = `${info.appName}-OTS-${date}.pub`
 
     fs.writeFile(`${downloadsPath}/${privateFileName}`, info.privateKey, (err) => {
       if (err) throw err
@@ -117,7 +117,7 @@ const actions = {
 
     const date = format(new Date(), 'MM-dd-yyyy-HH-mm-ss')
 
-    const transactionFile = `D3-OTS-Transaction-${date}.bin`
+    const transactionFile = `Transaction-${date}.bin`
 
     const tx = createCommand(info.commandType, info.params)
     const binaryArray = transactionToBinary(tx)
@@ -130,9 +130,7 @@ const actions = {
     commit(types.SAVE_RAW_TRANSACTION_FILE)
     const downloadsPath = info.path
 
-    const date = format(new Date(), 'MM-dd-yyyy-HH-mm-ss')
-
-    const transactionFile = `D3-OTS-Transaction-Signed-${date}.bin`
+    const transactionFile = `Signed-Transaction-${info.date}.bin`
 
     const binaryArray = transactionToBinary(info.tx)
 

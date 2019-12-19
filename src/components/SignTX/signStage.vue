@@ -28,7 +28,7 @@
             class="form_upload-button"
             :auto-upload="false"
             :show-file-list="false"
-            :on-change="(file, fileList) => onFileChosen(file, fileList, key)"
+            :on-change="(file, fileList) => onFileChosen(file, fileList)"
           >
             <el-button>
               <img
@@ -53,7 +53,7 @@ export default {
     }
   },
   methods: {
-    onFileChosen (file, fileList, index) {
+    onFileChosen (file, fileList) {
       const reader = new FileReader()
       reader.onload = (ev) => {
         this.sign.privateKey = (ev.target.result || '').trim()

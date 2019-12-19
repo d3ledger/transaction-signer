@@ -86,6 +86,8 @@ export default {
   },
   data () {
     return {
+      appName: this.$electron.remote.process.env['APP_NAME'],
+      txFileName: '',
       rawTx: undefined,
       stage: 1,
       indexToSign: 0,
@@ -151,6 +153,7 @@ export default {
     onTxUploaded (file, fileList) {
       const reader = new FileReader()
       reader.onload = (ev) => {
+        this.txFileName = file.name.split('-').slice(-6).join('-').split('.')[0]
         const bytesArray = ev.target.result || []
         const UintArray = new Uint8Array(bytesArray)
         try {
@@ -207,7 +210,7 @@ export default {
     },
     onSaveTransaction (tx) {
       const path = this.$electron.remote.app.getPath('downloads')
-      this.saveRawTransaction({ tx, path })
+      this.saveRawTransaction({ tx, path, date: this.txFileName })
     }
   }
 }
