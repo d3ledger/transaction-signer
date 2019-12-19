@@ -40,13 +40,7 @@ const defaultRouter = new Router({
           component: lazyView('KeyPair')
         }
       ]
-    },
-    {
-      path: '/create-tx',
-      name: 'create-tx',
-      component: lazyView('CreateTX')
     }
-
   ]
 })
 
