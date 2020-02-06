@@ -58,7 +58,6 @@ export default {
   name: 'Loading',
   data () {
     return {
-      appName: this.$electron.remote.process.env['APP_NAME'],
       currentPercent: 0,
       loadingInterval: null,
       isApplicationOnlineTemp: true

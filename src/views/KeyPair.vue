@@ -117,7 +117,7 @@ export default {
   },
   data () {
     return {
-      appName: this.$electron.remote.process.env['APP_NAME'],
+      appName: 'SoraNet',
       info: {
         privateKey: '',
         publicKey: ''
