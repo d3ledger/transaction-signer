@@ -29,6 +29,7 @@
             :auto-upload="false"
             :show-file-list="false"
             :on-change="(file, fileList) => onFileChosen(file, fileList)"
+            accept=".priv"
           >
             <el-button>
               <img

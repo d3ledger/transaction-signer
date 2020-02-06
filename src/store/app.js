@@ -7,6 +7,7 @@ import flatMap from 'lodash/fp/flatMap'
 import concat from 'lodash/fp/concat'
 import fromPairs from 'lodash/fp/fromPairs'
 import flow from 'lodash/fp/flow'
+import JSZip from 'jszip'
 
 import {
   cryptoHelper,
@@ -137,6 +138,25 @@ const actions = {
     fs.writeFile(`${downloadsPath}/${transactionFile}`, Buffer.from(binaryArray), (err) => {
       if (err) throw err
     })
+  },
+  saveRawTransactions ({ commit }, info) {
+    commit(types.SAVE_RAW_TRANSACTION_FILE)
+    const downloadsPath = info.path
+
+    const transactionFile = `Signed-Transaction-${info.date}.bin.zip`
+
+    const zip = new JSZip()
+
+    info.txs.forEach((tx, i) =>
+      zip.file(`Signed-Transaction-${i}.bin`, transactionToBinary(tx))
+    )
+
+    zip.generateAsync({ type: 'nodebuffer' })
+      .then(function (buffer) {
+        fs.writeFile(`${downloadsPath}/${transactionFile}`, buffer, (err) => {
+          if (err) throw err
+        })
+      })
   },
   parseTransaction ({ commit }, UintArray) {
     commit(types.PARSE_TRANSACTION)

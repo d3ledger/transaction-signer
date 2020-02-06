@@ -10,18 +10,28 @@
       style="padding: 2rem"
     />
     <div v-if="stage === 2">
-      <parsedTransferAsset
-        v-if="transactionToShow[0].title === 'transferAsset'"
-        :tx="transactionToShow"
-      />
-      <parsedAddSignatory
-        v-if="transactionToShow[0].title === 'addSignatory'"
-        :tx="transactionToShow"
-      />
-      <parsedSetAccountDetail
-        v-if="transactionToShow[0].title === 'setAccountDetail'"
-        :tx="transactionToShow"
-      />
+      <template v-if="transactionToObject">
+        <parsedTransferAsset
+          v-if="transactionToShow[0].title === 'transferAsset'"
+          :tx="transactionToShow"
+        />
+        <parsedAddSignatory
+          v-if="transactionToShow[0].title === 'addSignatory'"
+          :tx="transactionToShow"
+        />
+        <parsedSetAccountDetail
+          v-if="transactionToShow[0].title === 'setAccountDetail'"
+          :tx="transactionToShow"
+        />
+      </template>
+      <div
+        v-if="rawListTx.length"
+        class="transaction_list-names"
+      >
+        <template v-for="(tx, index) in rawListTx">
+          <span :key="index">{{ tx.name }}</span>
+        </template>
+      </div>
       <el-divider />
       <div class="content-body">
         <signStage
@@ -71,6 +81,7 @@
 import { mapActions } from 'vuex'
 import { lazyComponent } from '@/router'
 import cloneDeep from 'lodash/fp/cloneDeep'
+import JSZip from 'jszip'
 
 export default {
   name: 'SignTx',
@@ -86,9 +97,10 @@ export default {
   },
   data () {
     return {
-      appName: this.$electron.remote.process.env['APP_NAME'],
       txFileName: '',
       rawTx: undefined,
+      rawListTx: [],
+      isZipFile: false,
       stage: 1,
       indexToSign: 0,
       sign: {
@@ -102,7 +114,6 @@ export default {
       return this.rawTx ? this.rawTx.toObject() : undefined
     },
     transactions () {
-      console.log(this.transactionToObject)
       const tx = cloneDeep(this.transactionToObject)
       if (tx.transactionsList) {
         let txList = tx.transactionsList
@@ -117,7 +128,6 @@ export default {
       }
     },
     transactionToShow () {
-      console.log(this.transactions)
       return this.transactions.reduce((result, tx) => {
         const commandsList = tx.payload.reducedPayload.commandsList
         const time = tx.payload.reducedPayload.createdTime
@@ -145,52 +155,105 @@ export default {
       'parseTransactions',
       'signTransaction',
       'signTransactionInList',
-      'saveRawTransaction'
+      'saveRawTransaction',
+      'saveRawTransactions'
     ]),
     goBack () {
       this.stage = 1
     },
     onTxUploaded (file, fileList) {
+      this.isZipFile = file.raw.type === 'application/zip'
       const reader = new FileReader()
-      reader.onload = (ev) => {
+      reader.onload = async (ev) => {
         this.txFileName = file.name.split('-').slice(-6).join('-').split('.')[0]
         const bytesArray = ev.target.result || []
-        const UintArray = new Uint8Array(bytesArray)
-        try {
-          this.parseTransaction(UintArray)
-            .then((tx) => {
-              this.rawTx = tx
-              this.stage = 2
-              this.sign.privateKey = ''
-            })
-        } catch (error) {
-          this.parseTransactions(UintArray)
-            .then((tx) => {
-              this.rawTx = tx
-              this.stage = 2
-              this.sign.privateKey = ''
-            })
+        if (this.isZipFile) {
+          const zip = await JSZip.loadAsync(bytesArray)
+          for (const key of Object.keys(zip.files)) {
+            const UintArray = await zip.files[key].async('uint8array')
+            try {
+              this.rawListTx.push({ name: key, tx: await this.parseTransaction(UintArray) })
+            } catch (error) {
+              this.rawListTx.push({ name: key, tx: await this.parseTransactions(UintArray) })
+            }
+          }
+          this.stage = 2
+        } else {
+          const UintArray = new Uint8Array(bytesArray)
+          this.parseBinaryTransaction(UintArray)
         }
       }
       reader.readAsArrayBuffer(file.raw)
     },
+    parseBinaryTransaction (UintArray) {
+      const next = (tx) => {
+        this.rawTx = tx
+        this.stage = 2
+        this.sign.privateKey = ''
+      }
+      try {
+        this.parseTransaction(UintArray)
+          .then(next)
+      } catch (error) {
+        this.parseTransactions(UintArray)
+          .then(next)
+      }
+    },
     onReset () {
       this.rawTx = undefined
+      this.rawListTx = []
       this.stage = 1
       this.indexToSign = 0
       this.sign.privateKey = ''
+      this.isZipFile = false
     },
     onSignAndDownload () {
       if (!this.sign.privateKey.length) {
         this.$message.error('Private key can\'t be empty!')
         return
       }
-      this.onSign()
-        .then(tx => this.onSaveTransaction(tx))
-        .then(() => {
-          this.isNotificationVisible = true
-          this.onReset()
-        })
+      if (this.isZipFile) {
+        this.onSignZip()
+          .then(txs => this.onSaveTransactions(txs))
+          .then(() => {
+            this.isNotificationVisible = true
+            this.onReset()
+          })
+      } else {
+        this.onSign()
+          .then(tx => this.onSaveTransaction(tx))
+          .then(() => {
+            this.isNotificationVisible = true
+            this.onReset()
+          })
+      }
+    },
+    async onSignZip () {
+      const txs = []
+      for (const { tx } of this.rawListTx) {
+        const transaction = tx.toObject()
+        if (!transaction.transactionList) {
+          const signTx = await this.signTransaction({
+            transaction: tx,
+            privateKey: this.sign.privateKey
+          })
+          txs.push(signTx)
+        } else {
+          const txList = transaction.getTransactionsList()
+          if (txList[0].signaturesList.length === Math.round(txList[0].payload.reducedPayload.quorum / 2)) {
+            [txList[0], txList[1]] = [txList[1], txList[0]]
+            this.$set(this, 'indexToSign', 1)
+          }
+          txList.forEach(tx => tx.clearSignaturesList())
+          const signTx = await this.signTransactionInList({
+            transactionList: txList,
+            index: this.indexToSign,
+            privateKey: this.sign.privateKey
+          })
+          txs.push(signTx)
+        }
+      }
+      return txs
     },
     onSign () {
       if (this.transactions.length === 1) {
@@ -211,6 +274,10 @@ export default {
     onSaveTransaction (tx) {
       const path = this.$electron.remote.app.getPath('downloads')
       this.saveRawTransaction({ tx, path, date: this.txFileName })
+    },
+    onSaveTransactions (txs) {
+      const path = this.$electron.remote.app.getPath('downloads')
+      this.saveRawTransactions({ txs, path, date: this.txFileName })
     }
   }
 }
@@ -242,6 +309,10 @@ export default {
   margin: 20% 0 1rem;
 }
 
+.upload-transaction >>> .el-upload-dragger:hover {
+  border-color: #000000;
+}
+
 .sign-tx >>> .el-divider {
   background: #ebebeb !important;
   margin: 0px;
@@ -249,5 +320,11 @@ export default {
 
 .actions {
   margin-top: 4.5rem;
+}
+
+.transaction_list-names {
+  padding: 1rem 2rem;
+  display: flex;
+  flex-direction: column;
 }
 </style>
