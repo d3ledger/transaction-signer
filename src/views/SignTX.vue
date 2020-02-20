@@ -208,8 +208,17 @@ export default {
       this.isZipFile = false
     },
     onSignAndDownload () {
+      const _keyPattern = (value) => {
+        const pattern = /^[A-Fa-f0-9]{64}$/
+        if (!pattern.test(value)) return false
+        return true
+      }
       if (!this.sign.privateKey.length) {
         this.$message.error('Private key can\'t be empty!')
+        return
+      }
+      if (!_keyPattern(this.sign.privateKey)) {
+        this.$message.error('Invalid private key!')
         return
       }
       if (this.isZipFile) {
